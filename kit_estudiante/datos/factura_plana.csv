@@ -1,0 +1,5 @@
+NumFactura,Fecha,Cliente,DocCliente,CiudadCliente,Producto1,Cant1,Precio1,Producto2,Cant2,Precio2,Producto3,Cant3,Precio3,Total
+1001,2026-09-01,"Papelería El Estudiante, S.A.","0012345678","Ciudad Central","Resma de papel carta 500 hojas",10,119.00,"Bolígrafo azul (caja 12)",5,72.00,"Marcador permanente negro",12,24.50,2139.04
+1002,2026-09-03,"Escuela Técnica Horizonte","0045678912","Puerto Azul","Laptop 14 pulgadas 16 GB",2,15999.00,"Ratón óptico USB",2,189.50,"Teclado inalámbrico",2,499.00,38715.00
+1003,2026-09-08,"Consultores Andinos, S.R.L.","0098765432","Villa Norte","Monitor 24 pulgadas Full HD",3,2899.00,"Cable HDMI 2 m",3,149.90,,,,10610.17
+1004,2026-09-10,"Papelería El Estudiante SA","0012345678","Cd. Central","Cuaderno profesional 100 hojas",20,45.00,"Resma de papel carta 500 hojas",5,119.00,,,,1734.20

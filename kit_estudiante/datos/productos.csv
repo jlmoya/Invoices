@@ -1,0 +1,16 @@
+IdProducto,Codigo,Descripcion,IdCategoria,Precio,Existencia
+1,"POR-001","Laptop 14 pulgadas 16 GB",6,15999.00,8
+2,"POR-002","Laptop 15.6 pulgadas 8 GB",6,11499.00,5
+3,"PCE-001","Computadora de escritorio i5 16 GB",7,13999.00,4
+4,"PER-001","Monitor 24 pulgadas Full HD",8,2899.00,12
+5,"PER-002","Teclado inalámbrico",8,499.00,30
+6,"PER-003","Ratón óptico USB",8,189.50,45
+7,"PER-004","Impresora láser monocromática",8,3299.00,6
+8,"CAB-001","Cable HDMI 2 m",9,149.90,60
+9,"CAB-002","Adaptador USB-C a HDMI",9,349.00,25
+10,"CAB-003","Cable de red Cat 6 3 m",9,89.90,80
+11,"PAP-001","Resma de papel carta 500 hojas",10,119.00,100
+12,"PAP-002","Resma de papel oficio 500 hojas",10,139.00,70
+13,"ESC-001","Bolígrafo azul (caja 12)",11,72.00,50
+14,"ESC-002","Marcador permanente negro",11,24.50,120
+15,"ESC-003","Cuaderno profesional 100 hojas",11,45.00,90

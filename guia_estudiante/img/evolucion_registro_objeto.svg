@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 320" width="760" height="320" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="flecha" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="#4b5563"/>
+    </marker>
+    <marker id="flecha-roja" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <rect width="760" height="320" fill="#ffffff"/>
+  <text x="20" y="28" font-size="16" font-weight="600" fill="#1f2937">El objeto protege sus datos: solo se usa a través de sus métodos</text>
+  <rect x="20" y="44" width="210" height="256" rx="8" fill="#ffffff" stroke="#d1d5db"/>
+  <rect x="275" y="44" width="210" height="256" rx="8" fill="#ffffff" stroke="#d1d5db"/>
+  <rect x="530" y="44" width="210" height="256" rx="8" fill="#ffffff" stroke="#d1d5db"/>
+  <g stroke="#4b5563" stroke-width="1.25" fill="none">
+    <path d="M232 172H271" marker-end="url(#flecha)"/>
+    <path d="M487 172H526" marker-end="url(#flecha)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="125" y="70" font-size="13" font-weight="600" fill="#1f2937">Registro</text>
+    <text x="125" y="86" font-size="11" fill="#4b5563">sesión 2</text>
+    <text x="380" y="70" font-size="13" font-weight="600" fill="#1f2937">Estructura con reglas</text>
+    <text x="380" y="86" font-size="11" fill="#4b5563">sesión 6</text>
+    <text x="635" y="70" font-size="13" font-weight="600" fill="#1f2937">Objeto</text>
+    <text x="635" y="86" font-size="11" fill="#4b5563">sesiones 7 y 8</text>
+  </g>
+  <rect x="55" y="104" width="140" height="96" rx="4" fill="#ffffff" stroke="#9ca3af"/>
+  <line x1="55" y1="136" x2="195" y2="136" stroke="#e5e7eb"/>
+  <line x1="55" y1="168" x2="195" y2="168" stroke="#e5e7eb"/>
+  <g font-size="12" fill="#1f2937">
+    <text x="67" y="124">Codigo</text>
+    <text x="67" y="156">Descripcion</text>
+    <text x="67" y="188">Precio</text>
+  </g>
+  <g font-size="11.5" fill="#1f2937" text-anchor="middle">
+    <text x="125" y="236">Datos agrupados, sin reglas:</text>
+    <text x="125" y="254">cualquier código cambia</text>
+    <text x="125" y="272">cualquier campo.</text>
+  </g>
+  <rect x="290" y="104" width="100" height="96" rx="4" fill="#ffffff" stroke="#9ca3af"/>
+  <line x1="290" y1="128" x2="390" y2="128" stroke="#e5e7eb"/>
+  <line x1="290" y1="152" x2="390" y2="152" stroke="#e5e7eb"/>
+  <line x1="290" y1="176" x2="390" y2="176" stroke="#e5e7eb"/>
+  <g font-size="11" fill="#1f2937">
+    <text x="300" y="121">1002</text><text x="300" y="145">1003</text><text x="300" y="169">1005</text>
+  </g>
+  <rect x="398" y="112" width="78" height="24" rx="4" fill="#eff6ff" stroke="#2563eb"/>
+  <rect x="398" y="146" width="78" height="24" rx="4" fill="#eff6ff" stroke="#2563eb"/>
+  <g font-size="11" fill="#1f2937" text-anchor="middle">
+    <text x="437" y="128">Encolar</text>
+    <text x="437" y="162">Desencolar</text>
+  </g>
+  <path d="M352 232L340 204" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="4 3" fill="none" marker-end="url(#flecha-roja)"/>
+  <text x="358" y="236" font-size="11" font-weight="600" fill="#dc2626">UPDATE directo</text>
+  <g font-size="11.5" fill="#1f2937" text-anchor="middle">
+    <text x="380" y="264">Las reglas existen,</text>
+    <text x="380" y="282">pero se pueden saltar.</text>
+  </g>
+  <rect x="552" y="112" width="166" height="128" rx="24" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5"/>
+  <text x="635" y="136" font-size="10.5" fill="#4b5563" text-anchor="middle">estado privado</text>
+  <rect x="592" y="142" width="86" height="64" rx="6" fill="#ffffff" stroke="#93c5fd" stroke-dasharray="4 2"/>
+  <g font-size="11" fill="#1f2937" text-anchor="middle">
+    <text x="635" y="160">mEstado</text>
+    <text x="635" y="176">mNumero</text>
+    <text x="635" y="192">mLineas</text>
+  </g>
+  <g fill="#ffffff" stroke="#2563eb" stroke-width="1.5">
+    <rect x="560" y="102" width="70" height="20" rx="4"/>
+    <rect x="640" y="102" width="70" height="20" rx="4"/>
+    <rect x="556" y="230" width="90" height="20" rx="4"/>
+    <rect x="652" y="230" width="62" height="20" rx="4"/>
+  </g>
+  <g font-size="11" font-weight="600" fill="#1f2937" text-anchor="middle">
+    <text x="595" y="116">Emitir</text>
+    <text x="675" y="116">Total</text>
+    <text x="601" y="244">AgregarLinea</text>
+    <text x="683" y="244">Anular</text>
+  </g>
+  <g font-size="11.5" fill="#1f2937" text-anchor="middle">
+    <text x="635" y="272">Solo se entra por sus métodos:</text>
+    <text x="635" y="290">el objeto hace cumplir sus reglas.</text>
+  </g>
+</svg>

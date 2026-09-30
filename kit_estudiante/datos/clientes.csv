@@ -1,0 +1,9 @@
+IdCliente,DocumentoFiscal,RazonSocial,Direccion,Ciudad,Telefono,Correo,FechaAlta
+1,"0012345678","Papelería El Estudiante, S.A.","Av. Universidad 120","Ciudad Central","555-0101","compras@elestudiante.example",2024-01-15
+2,"0098765432","Consultores Andinos, S.R.L.","Calle Los Pinos 45","Villa Norte","555-0102","admin@andinos.example",2024-02-03
+3,"0045678912","Escuela Técnica Horizonte","Carrera 8 No. 12-30","Puerto Azul","555-0103","direccion@horizonte.example",2024-03-20
+4,"0034567891","María Fernanda Ruiz","Pasaje Las Flores 7","Ciudad Central","555-0104","mfruiz@correo.example",2024-05-11
+5,"0023456789","Talleres Mecánicos Rodríguez","Km 5 Carretera Sur","Villa Norte","555-0105",,2024-06-02
+6,"0056789123","Clínica Dental Sonrisas","Av. Central 300","Puerto Azul","555-0106","citas@sonrisas.example",2024-08-19
+7,"0067891234","Juan Carlos Méndez","Calle 5 No. 18","Ciudad Central","555-0107","jcmendez@correo.example",2025-01-09
+8,"0078912345","Cooperativa Agrícola El Valle","Camino Real s/n","Valle Verde","555-0108","ventas@elvalle.example",2025-02-27

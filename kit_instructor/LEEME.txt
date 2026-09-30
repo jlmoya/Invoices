@@ -1,0 +1,17 @@
+KIT DEL INSTRUCTOR (no lo compartas con los estudiantes)
+
+vba\clsFactura.cls ............ Solución completa de la clase Factura (sesión 8).
+                                 Importa esta o la plantilla del kit del estudiante,
+                                 nunca ambas: las dos se llaman clsFactura.
+vba\modConstruirSolucion.bas .. Construye la base de solución: tablas, reglas,
+                                 relaciones, datos de ejemplo y consultas.
+vba\modSolucionesTareas.bas ... Soluciones de la tarea 6 (profundidad y ruta).
+
+Construir la base de solución:
+1. Crea una base en blanco, por ejemplo C:\CursoED\Facturacion_Solucion.accdb.
+2. Alt+F11 > Archivo > Importar archivo > modConstruirSolucion.bas.
+3. En la ventana Inmediato (Ctrl+G) escribe: ConstruirSolucion
+4. Importa los módulos del laboratorio 8 del kit del estudiante, pero con esta
+   clsFactura.cls en lugar de la plantilla, y ejecuta ProbarReglas y
+   ProbarRepositorio.
+Los formularios y el informe se construyen a mano con el laboratorio 5.

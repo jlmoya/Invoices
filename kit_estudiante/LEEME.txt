@@ -1,0 +1,22 @@
+KIT DEL ESTUDIANTE
+Introducción a las Estructuras de Datos - Laboratorio con Microsoft Access
+
+1. Crea la carpeta C:\CursoED en el disco local (fuera de OneDrive).
+2. Copia dentro de C:\CursoED las carpetas "datos" y "vba" de este kit.
+3. No vuelvas a guardar estos archivos con otra codificación: están en Windows-1252.
+
+datos\
+  clientes.csv, productos.csv ............................ Laboratorio 2
+  factura_plana.csv, categorias.csv, facturas.csv,
+  detalle_factura.csv .................................... Laboratorio 3
+
+vba\   (Alt+F11 > Archivo > Importar archivo)
+  modRegistros.bas ....................................... Laboratorio 2
+  modEstructuras.bas ..................................... Laboratorio 6
+  modConstantes.bas, clsLineaFactura.cls,
+  clsFactura_plantilla.cls, clsRepositorioFacturas.cls,
+  modPruebasObjetos.bas .................................. Laboratorio 8
+  IDescuento.cls, clsSinDescuento.cls,
+  clsDescuentoPorcentaje.cls, modPolimorfismo.bas ........ Laboratorio 8 (opcional)
+
+Nota: clsFactura_plantilla.cls aparece como "clsFactura" al importarla.

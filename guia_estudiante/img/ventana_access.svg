@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 400" width="760" height="400" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <rect width="760" height="400" fill="#ffffff"/>
+  <text x="20" y="28" font-size="16" font-weight="600" fill="#1f2937">Las seis zonas de la ventana de Access que usarás en el curso</text>
+  <rect x="20" y="44" width="460" height="330" fill="#ffffff" stroke="#9ca3af"/>
+  <rect x="20" y="44" width="460" height="24" fill="#e5e7eb"/>
+  <text x="32" y="60" font-size="11" fill="#374151">Facturacion : Base de datos - Access</text>
+  <rect x="20" y="68" width="460" height="22" fill="#f3f4f6"/>
+  <rect x="26" y="71" width="52" height="16" rx="2" fill="#2563eb"/>
+  <g font-size="11" fill="#374151">
+    <text x="32" y="83" fill="#ffffff">Archivo</text>
+    <text x="90" y="83">Inicio</text>
+    <text x="130" y="83">Crear</text>
+    <text x="172" y="83">Datos externos</text>
+    <text x="262" y="83">Herramientas de base de datos</text>
+  </g>
+  <rect x="20" y="90" width="460" height="50" fill="#f9fafb" stroke="#d1d5db"/>
+  <g fill="#e5e7eb">
+    <rect x="34" y="98" width="44" height="34" rx="3"/><rect x="88" y="98" width="44" height="34" rx="3"/>
+    <rect x="142" y="98" width="44" height="34" rx="3"/><rect x="196" y="98" width="44" height="34" rx="3"/>
+    <rect x="250" y="98" width="44" height="34" rx="3"/><rect x="304" y="98" width="44" height="34" rx="3"/>
+    <rect x="358" y="98" width="44" height="34" rx="3"/><rect x="412" y="98" width="44" height="34" rx="3"/>
+  </g>
+  <rect x="20" y="140" width="130" height="210" fill="#f9fafb" stroke="#d1d5db"/>
+  <g font-size="10.5" fill="#1f2937">
+    <text x="30" y="158" font-weight="600">Todos los objetos</text>
+    <text x="30" y="180" font-weight="600">Tablas</text>
+    <text x="42" y="196">tblClientes</text>
+    <text x="42" y="212">tblProductos</text>
+    <text x="30" y="236" font-weight="600">Consultas</text>
+    <text x="30" y="258" font-weight="600">Formularios</text>
+    <text x="30" y="280" font-weight="600">Informes</text>
+    <text x="30" y="302" font-weight="600">Módulos</text>
+  </g>
+  <rect x="150" y="140" width="330" height="22" fill="#f3f4f6"/>
+  <rect x="156" y="143" width="80" height="19" fill="#ffffff" stroke="#9ca3af"/>
+  <text x="164" y="156" font-size="10.5" fill="#1f2937">tblClientes</text>
+  <rect x="150" y="162" width="330" height="188" fill="#ffffff" stroke="#d1d5db"/>
+  <rect x="160" y="172" width="310" height="20" fill="#f3f4f6" stroke="#d1d5db"/>
+  <g stroke="#e5e7eb">
+    <line x1="160" y1="212" x2="470" y2="212"/><line x1="160" y1="232" x2="470" y2="232"/>
+    <line x1="160" y1="252" x2="470" y2="252"/><line x1="160" y1="272" x2="470" y2="272"/>
+    <line x1="160" y1="292" x2="470" y2="292"/>
+    <line x1="230" y1="172" x2="230" y2="292"/><line x1="340" y1="172" x2="340" y2="292"/>
+  </g>
+  <g font-size="10" fill="#1f2937">
+    <text x="166" y="186" font-weight="600">IdCliente</text>
+    <text x="236" y="186" font-weight="600">DocumentoFiscal</text>
+    <text x="346" y="186" font-weight="600">RazonSocial</text>
+    <text x="166" y="207">1</text><text x="236" y="207">0012345678</text><text x="346" y="207">Papelería El Estudiante</text>
+    <text x="166" y="227">2</text><text x="236" y="227">0098765432</text><text x="346" y="227">Consultores Andinos</text>
+  </g>
+  <rect x="20" y="350" width="460" height="24" fill="#e5e7eb"/>
+  <text x="30" y="366" font-size="11" fill="#374151">Vista Hoja de datos</text>
+  <rect x="430" y="355" width="14" height="14" fill="#9ca3af"/><rect x="450" y="355" width="14" height="14" fill="#d1d5db"/>
+  <g font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">
+    <circle cx="20" cy="79" r="9" fill="#2563eb"/><text x="20" y="83">1</text>
+    <circle cx="20" cy="115" r="9" fill="#2563eb"/><text x="20" y="119">2</text>
+    <circle cx="20" cy="245" r="9" fill="#2563eb"/><text x="20" y="249">3</text>
+    <circle cx="248" cy="151" r="9" fill="#2563eb"/><text x="248" y="155">4</text>
+    <circle cx="480" cy="256" r="9" fill="#2563eb"/><text x="480" y="260">5</text>
+    <circle cx="20" cy="362" r="9" fill="#2563eb"/><text x="20" y="366">6</text>
+    <circle cx="518" cy="76" r="10" fill="#2563eb"/><text x="518" y="80">1</text>
+    <circle cx="518" cy="132" r="10" fill="#2563eb"/><text x="518" y="136">2</text>
+    <circle cx="518" cy="188" r="10" fill="#2563eb"/><text x="518" y="192">3</text>
+    <circle cx="518" cy="244" r="10" fill="#2563eb"/><text x="518" y="248">4</text>
+    <circle cx="518" cy="300" r="10" fill="#2563eb"/><text x="518" y="304">5</text>
+    <circle cx="518" cy="356" r="10" fill="#2563eb"/><text x="518" y="360">6</text>
+  </g>
+  <g font-size="12.5" font-weight="600" fill="#1f2937">
+    <text x="536" y="80">Archivo</text>
+    <text x="536" y="136">Cinta de opciones</text>
+    <text x="536" y="192">Panel de navegación</text>
+    <text x="536" y="248">Pestañas de objetos</text>
+    <text x="536" y="304">Área de trabajo</text>
+    <text x="536" y="360">Barra de estado</text>
+  </g>
+  <g font-size="11" fill="#4b5563">
+    <text x="536" y="97">Abrir, guardar, opciones y copias</text>
+    <text x="536" y="153">Comandos agrupados por pestaña</text>
+    <text x="536" y="209">Todos los objetos de la base</text>
+    <text x="536" y="265">Los objetos que tienes abiertos</text>
+    <text x="536" y="321">Vista Diseño u Hoja de datos</text>
+    <text x="536" y="377">Vista actual y botones de vista</text>
+  </g>
+</svg>

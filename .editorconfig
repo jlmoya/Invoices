@@ -1,0 +1,13 @@
+root = true
+
+# Guides, SVG images and the rest of the project: UTF-8 with LF.
+[*]
+charset = utf-8
+end_of_line = lf
+
+# Kit files: Windows-1252 with CRLF, so Access and the VBA editor import them
+# without losing accents (see README.md). EditorConfig has no windows-1252 value;
+# latin1 reads and writes the same bytes for every character these files use.
+[{*.csv,*.bas,*.cls,LEEME.txt}]
+charset = latin1
+end_of_line = crlf
