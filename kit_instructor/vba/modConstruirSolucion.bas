@@ -269,10 +269,12 @@ Private Sub CrearConsultas(ByVal db As DAO.Database)
         "WHERE Fecha BETWEEN [Fecha inicial] AND [Fecha final] ORDER BY Fecha;"
 
     db.CreateQueryDef "qryFacturaImpresion", _
-        "SELECT t.IdFactura, t.NumeroFactura, t.Fecha, t.Estado, t.RazonSocial, " & _
+        "SELECT p.NombreEmpresa, p.DocumentoFiscalEmpresa, " & _
+        "t.IdFactura, t.NumeroFactura, t.Fecha, t.Estado, t.RazonSocial, " & _
         "c.DocumentoFiscal, c.Direccion, c.Ciudad, l.Codigo, l.Descripcion, l.Cantidad, " & _
         "l.PrecioUnitario, l.Importe, t.Subtotal, t.TasaImpuesto, t.Impuesto, t.Total " & _
-        "FROM ((qryTotalesFactura AS t INNER JOIN tblFacturas AS f ON t.IdFactura = f.IdFactura) " & _
+        "FROM tblParametros AS p, " & _
+        "((qryTotalesFactura AS t INNER JOIN tblFacturas AS f ON t.IdFactura = f.IdFactura) " & _
         "INNER JOIN tblClientes AS c ON f.IdCliente = c.IdCliente) " & _
         "INNER JOIN qryLineasConImporte AS l ON t.IdFactura = l.IdFactura;"
 

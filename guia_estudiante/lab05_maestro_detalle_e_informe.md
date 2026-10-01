@@ -30,7 +30,7 @@ flowchart TD
 
 | Sección del informe | Qué imprime | Momento del recorrido |
 | --- | --- | --- |
-| Encabezado del grupo `IdFactura` | Número, fecha y cliente | Al entrar al nodo padre |
+| Encabezado del grupo `IdFactura` | Empresa emisora, número, fecha y cliente | Al entrar al nodo padre |
 | Detalle | Una fila por línea | En cada hijo |
 | Pie del grupo `IdFactura` | Subtotal, impuesto y total | Al salir del nodo padre |
 
@@ -128,20 +128,24 @@ End Sub
 1. Crea en Vista SQL la consulta `qryFacturaImpresion`:
 
 ```sql
-SELECT t.IdFactura, t.NumeroFactura, t.Fecha, t.Estado, t.RazonSocial,
+SELECT p.NombreEmpresa, p.DocumentoFiscalEmpresa,
+       t.IdFactura, t.NumeroFactura, t.Fecha, t.Estado, t.RazonSocial,
        c.DocumentoFiscal, c.Direccion, c.Ciudad,
        l.Codigo, l.Descripcion, l.Cantidad, l.PrecioUnitario, l.Importe,
        t.Subtotal, t.TasaImpuesto, t.Impuesto, t.Total
-FROM ((qryTotalesFactura AS t
+FROM tblParametros AS p,
+     ((qryTotalesFactura AS t
        INNER JOIN tblFacturas AS f ON t.IdFactura = f.IdFactura)
        INNER JOIN tblClientes AS c ON f.IdCliente = c.IdCliente)
        INNER JOIN qryLineasConImporte AS l ON t.IdFactura = l.IdFactura;
 ```
 
+> **Concepto:** `tblParametros` entra en el `FROM` separada por una coma y sin `ON`. Una unión sin condición combina cada fila de un lado con cada fila del otro: es un producto cartesiano. Como `tblParametros` tiene un solo registro, cada línea recibe los datos de la empresa una sola vez, y el encabezado de cada factura los imprime. Si la tabla tuviera dos registros, cada línea saldría dos veces; si no tuviera ninguno, el informe saldría vacío. Ahí trabaja la regla `=1` del laboratorio 4.
+
 2. Elige Crear → Asistente para informes (Report Wizard) sobre `qryFacturaImpresion` y agrega todos los campos.
 3. Agrupa por `IdFactura`, ordena el detalle por `Descripcion`, elige la distribución En pasos y nombra el informe `rptFactura`.
 4. En vista Diseño, abre el panel Agrupación, orden y total (Group, Sort, and Total), pulsa Más y activa la sección de pie del grupo.
-5. Mueve los datos de factura y cliente al encabezado del grupo, y `Subtotal`, `Impuesto` y `Total` al pie del grupo.
+5. Mueve al encabezado del grupo los datos de la empresa (`NombreEmpresa` y `DocumentoFiscalEmpresa`), de la factura y del cliente, y `Subtotal`, `Impuesto` y `Total` al pie del grupo.
 6. En la propiedad Forzar nueva página (Force New Page) del pie del grupo elige Después de la sección.
 
 > **Captura sugerida:** la vista preliminar de `rptFactura` con la factura 1003.
@@ -170,6 +174,7 @@ End Sub
 - [ ] Al elegir un producto en una línea nueva, el precio se copia solo.
 - [ ] Una factura nueva toma la tasa de `tblParametros`.
 - [ ] `rptFactura` muestra una factura por página y `cmdImprimir` muestra solo la factura actual.
+- [ ] El encabezado de cada factura en `rptFactura` muestra el nombre y el documento fiscal de la empresa.
 
 ## Tarea 5 · Estado de cuenta por cliente
 

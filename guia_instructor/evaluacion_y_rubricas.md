@@ -41,7 +41,7 @@ La misma que ve el estudiante en `guia_estudiante/proyecto_integrador.md`: model
 | 3, opcional | ¿Qué resuelve la cuarta forma normal? | Dos listas independientes guardadas en la misma tabla: dependencias multivaluadas |
 | 3, opcional | ¿Qué resuelve la quinta forma normal? | Una tabla que guarda como un solo hecho varios hechos más pequeños: dependencias de unión |
 | 4 | ¿Qué operación de colecciones es `GROUP BY` con `Sum`? | Agregar por clave (reduce) |
-| 4 | ¿Por qué la tasa vive en `tblParametros`? | Para cambiarla sin editar consultas ni código |
+| 4 | ¿Por qué la tasa vive en `tblParametros`? | Es la tasa vigente: se cambia en un solo lugar, sin editar consultas ni código. Cada factura copia la suya al crearse y la conserva |
 | 5 | ¿Qué guarda un combo con ancho de columnas `0cm;6cm`? | La clave oculta de la primera columna |
 | 5 | ¿Qué recorrido hace un informe agrupado? | Encabezado del grupo, detalle y pie |
 | 6 | ¿Qué distingue a una cola de una pila? | El orden de salida: FIFO frente a LIFO |

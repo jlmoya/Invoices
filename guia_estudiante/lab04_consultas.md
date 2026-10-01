@@ -39,7 +39,16 @@ flowchart LR
     Q3 --> Q5["qryFacturasPorPeriodo<br/>filtrar con parámetros"]
 ```
 
-**Configuración en una tabla.** La tasa de impuesto no se escribe dentro de las fórmulas: vive en `tblParametros`, una tabla de un solo registro. Su regla de validación `=1` sobre la clave impide agregar un segundo registro.
+**Configuración en una tabla.** `tblParametros` guarda en un solo registro los datos de la empresa que emite las facturas y la tasa de impuesto vigente. La clave principal no admite un `Id` repetido y la regla de validación `=1` no admite otro valor, así que la tabla no puede tener un segundo registro. Los datos de la empresa se imprimen en el encabezado de cada factura (laboratorio 5).
+
+**Tasa vigente y tasa aplicada.** La tasa aparece en dos tablas y cada una significa algo distinto:
+
+| Campo | Qué guarda | Quién lo usa |
+| --- | --- | --- |
+| `tblParametros.TasaImpuesto` | La tasa vigente hoy | El formulario de facturas, que la copia en cada factura nueva (laboratorio 5) |
+| `tblFacturas.TasaImpuesto` | La tasa aplicada a esa factura | `qryTotalesFactura`, que calcula con ella el impuesto |
+
+Por eso las fórmulas de este laboratorio usan `f.TasaImpuesto`, la tasa de la factura. Si el impuesto cambia, editas un solo valor en `tblParametros`, sin tocar consultas ni código: las facturas nuevas toman la tasa nueva y las anteriores conservan la suya, como el precio unitario de cada línea.
 
 **SQL siempre en inglés.** En la vista SQL, las funciones y palabras clave están en inglés aunque tu Access esté en español. Por eso los cálculos de este laboratorio se escriben ahí.
 

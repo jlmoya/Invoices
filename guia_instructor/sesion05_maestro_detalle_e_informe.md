@@ -25,6 +25,7 @@ El momento clave está al final: el grupo rompe a propósito dos reglas del nego
 | --- | --- |
 | ¿Qué hacen los campos vinculados del subformulario? | Filtran las líneas por `IdFactura` y asignan ese valor a las líneas nuevas |
 | ¿Por qué `ActualizarTotales` usa `DSum` en VBA? | Funciona igual en cualquier idioma de Access y no depende de controles del subformulario |
+| ¿Por qué unir `tblParametros` sin `ON` no duplica las líneas del informe? | Tiene un solo registro: el producto cartesiano con una fila deja cada línea una vez |
 | ¿Quién debería impedir modificar una factura pagada? | Pregunta abierta: prepara la sesión 7 |
 
 ## Errores frecuentes
@@ -37,6 +38,7 @@ El momento clave está al final: el grupo rompe a propósito dos reglas del nego
 | Varias facturas por página | Falta Forzar nueva página | Pie del grupo: Después de la sección |
 | El botón imprime todas las facturas | Falta la condición de filtro | Revisar el cuarto argumento de `OpenReport` |
 | Una factura no aparece en el informe | No tiene líneas y la unión es interna | Es lo esperado; ver el reto de la sesión 4 |
+| El informe sale vacío | `tblParametros` no tiene su registro, y la unión sin `ON` con una tabla vacía no devuelve filas | Agregar el registro de la Parte A del laboratorio 4 |
 
 ## Solución de la tarea 5
 
