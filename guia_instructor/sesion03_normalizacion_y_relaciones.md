@@ -24,8 +24,20 @@ El momento clave es la fila 1004 de `factura_plana.csv`: el mismo cliente escrit
 | Pregunta | Respuesta esperada |
 | --- | --- |
 | ¿`PrecioUnitario` en el detalle viola 3FN? | No: es el precio pactado en esa venta y depende de la línea completa |
+| ¿Una tabla cuya única clave es un solo campo puede violar 2FN? | No: una dependencia parcial necesita una clave compuesta |
+| ¿Qué dependencia permite que la fila 1004 escriba al cliente de otra forma? | La transitiva `NumFactura → DocCliente → Cliente, CiudadCliente`: los datos del cliente se copian en cada factura y cada copia puede escribirse distinto |
+| ¿La columna `Total` viola alguna forma normal? | En la tabla de líneas rompe 2FN, porque depende solo de `NumFactura`. En la de facturas cumple 3FN, pero se elimina porque se calcula y puede contradecir a las líneas |
 | ¿Por qué no hay cascada de clientes a facturas? | Las facturas son documentos que no deben desaparecer al borrar un cliente |
 | ¿Qué es una relación muchos a muchos en estructuras? | Dos listas de referencias; la tabla intermedia guarda los pares |
+
+Si el grupo leyó la parte opcional «Para ir más allá · Formas normales superiores» del laboratorio:
+
+| Pregunta | Respuesta esperada |
+| --- | --- |
+| ¿Qué caso deja pasar 3FN y prohíbe FNBC? | Un campo que por sí solo no es clave y determina una parte de una clave, como `Ejecutivo → Categoria` |
+| ¿Por qué un diseño puede quedarse en 3FN a propósito? | Llegar a FNBC puede perder una regla que garantizaba una clave: un solo ejecutivo por cliente y categoría |
+| La tabla de teléfonos y correos cumple FNBC. ¿Qué problema tiene? | Junta dos listas independientes: un correo nuevo exige una fila por cada teléfono |
+| ¿Por qué el ejemplo de 5FN necesita tres tablas y no dos? | Al unir solo dos aparecen filas falsas, como (Tecnodistribución, Accesorios, Puerto Azul); la tercera las filtra |
 
 ## Errores frecuentes
 
