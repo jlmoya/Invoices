@@ -49,4 +49,4 @@ La misma que ve el estudiante en `guia_estudiante/proyecto_integrador.md`: model
 | 7 | ¿Qué es una tarjeta CRC? | Clase, responsabilidades y colaboradores |
 | 7 | ¿Qué heurística asigna el total a la factura? | Experto en información |
 | 8 | ¿Por qué el repositorio es una clase aparte? | Alta cohesión: la factura no sabe de almacenamiento |
-| 8 | ¿Qué es el polimorfismo con `Implements`? | Usar clases distintas a través de la misma interfaz |
+| 8, opcional | ¿Qué es el polimorfismo con `Implements`? | Usar clases distintas a través de la misma interfaz |
