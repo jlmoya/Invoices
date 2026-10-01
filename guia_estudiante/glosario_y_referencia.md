@@ -11,17 +11,19 @@ Consulta este archivo cuando olvides un término, un menú o una sintaxis. Los t
 | Árbol | Estructura jerárquica: cada nodo tiene un padre, salvo la raíz | 6 |
 | Atributo | Característica de una entidad que se guarda como campo | 1 |
 | Clase | Plantilla que define el estado y el comportamiento de un tipo de objeto | 7 |
+| Clave candidata | Campo o grupo mínimo de campos que podría servir de clave principal | 3 |
 | Clave foránea | Campo que guarda la clave de otro registro: una referencia | 3 |
 | Clave principal | Campo o campos que identifican cada registro sin repetirse | 2 |
 | Clave sustituta | Clave generada por el sistema, sin significado para el negocio | 2 |
 | Cola (FIFO) | Estructura donde el primero en entrar es el primero en salir | 6 |
 | Composición | Relación en la que las partes no existen sin el todo | 3 y 7 |
 | Consulta | Pregunta sobre los datos que filtra, transforma, agrega o une | 4 |
+| Dependencia funcional | Relación en la que conocer un campo basta para saber otro: DocCliente → Ciudad | 3 |
 | Diccionario | Estructura de pares clave → valor con acceso casi constante; usa una tabla hash | 6 |
 | Encapsulamiento | Ocultar el estado de un objeto y permitir cambiarlo solo con sus métodos | 7 |
 | Entidad | Algo del problema sobre lo que se guardan datos | 1 |
 | Estructura de datos | Forma de organizar datos para usarlos con eficiencia | 1 |
-| Forma normal | Regla de diseño que elimina un tipo de redundancia (1FN, 2FN, 3FN) | 3 |
+| Forma normal | Regla de diseño que elimina un tipo de redundancia (1FN, 2FN, 3FN, FNBC, 4FN y 5FN) | 3 |
 | Índice | Estructura ordenada auxiliar que acelera las búsquedas | 2 |
 | Integridad referencial | Garantía de que ninguna clave foránea apunte a un registro inexistente | 3 |
 | Interfaz | Conjunto de métodos que varias clases se comprometen a implementar | 8 |

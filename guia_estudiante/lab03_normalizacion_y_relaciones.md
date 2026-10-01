@@ -20,7 +20,20 @@ Hoy partes de facturas guardadas en una sola tabla plana, descubres sus problema
 | Inserción | No puedes registrar un cliente nuevo hasta que compre algo |
 | Borrado | Si borras la única factura de un cliente, pierdes también al cliente |
 
-**Formas normales.** Son tres reglas que eliminan la redundancia paso a paso.
+**Dependencia funcional.** Un campo B depende de un campo A cuando conocer A basta para saber B. Se escribe A → B. En `factura_plana.csv`, `DocCliente → CiudadCliente`: con el documento fiscal sabes la ciudad. Al revés no, porque en una ciudad hay muchos clientes. Las formas normales se definen con esta idea.
+
+**Formas normales.** Son reglas acumulativas: cada una exige la anterior y elimina un tipo más de redundancia.
+
+| Forma | Exige | Elimina |
+| --- | --- | --- |
+| Primera (1FN) | Un solo valor por celda, sin grupos repetidos, y una clave que identifique cada fila | Columnas repetidas y listas dentro de una celda |
+| Segunda (2FN) | 1FN, y que cada campo fuera de la clave dependa de la clave completa | Dependencias parciales |
+| Tercera (3FN) | 2FN, y que ningún campo fuera de la clave dependa de otro campo fuera de la clave | Dependencias transitivas |
+| Boyce-Codd (FNBC) | 3FN, y que todo campo o grupo de campos que determina a otro sea clave candidata | Dependencias hacia una parte de la clave |
+| Cuarta (4FN) | FNBC, y que la tabla no junte dos listas independientes | Dependencias multivaluadas |
+| Quinta (5FN) | 4FN, y que la tabla no guarde como un solo hecho varios hechos más pequeños | Dependencias de unión |
+
+Este laboratorio llega hasta 3FN, el nivel habitual de una base bien diseñada. Las otras tres aparecen en casos especiales; las verás con ejemplos en «Para ir más allá», al final del paso a paso.
 
 ```mermaid
 flowchart LR
@@ -29,9 +42,54 @@ flowchart LR
     C -->|"3FN: sin dependencias transitivas"| D["Datos del cliente<br/>en su propia tabla"]
 ```
 
-- **Primera forma normal (1FN):** cada celda guarda un solo valor y no hay grupos repetidos como Producto1, Producto2 y Producto3.
-- **Segunda forma normal (2FN):** cada atributo depende de la clave completa. En una línea con clave (factura, producto), la descripción depende solo del producto.
-- **Tercera forma normal (3FN):** ningún atributo depende de otro que no sea clave. La ciudad depende del cliente, no de la factura.
+**1FN · Un valor por celda.** `factura_plana.csv` guarda las líneas en columnas repetidas (aquí solo algunas columnas):
+
+| NumFactura | Producto1 | Cant1 | Producto2 | Cant2 | Producto3 | Cant3 |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1001 | Resma de papel carta 500 hojas | 10 | Bolígrafo azul (caja 12) | 5 | Marcador permanente negro | 12 |
+| 1003 | Monitor 24 pulgadas Full HD | 3 | Cable HDMI 2 m | 3 | | |
+
+La factura 1003 deja columnas vacías, y para saber quién compró un cable HDMI hay que revisar tres columnas. En 1FN cada línea ocupa su propia fila y la clave es (NumFactura, Producto):
+
+| NumFactura | Producto | Cantidad |
+| --- | --- | --- |
+| 1001 | Resma de papel carta 500 hojas | 10 |
+| 1001 | Bolígrafo azul (caja 12) | 5 |
+| 1001 | Marcador permanente negro | 12 |
+
+Tampoco cumple 1FN una celda con una lista, como un teléfono `555-0101, 555-0199`. Los demás datos de la factura, como la fecha y el cliente, se copian ahora en cada fila; las dos formas siguientes se ocupan de esa repetición.
+
+**2FN · Todo depende de la clave completa.** Solo importa cuando la clave es compuesta. Con el código del producto, la tabla de 1FN tiene la clave (NumFactura, Codigo):
+
+| NumFactura | Codigo | Descripcion | Fecha | Cantidad | PrecioUnitario |
+| --- | --- | --- | --- | --- | --- |
+| 1001 | PAP-001 | Resma de papel carta 500 hojas | 2026-09-01 | 10 | 119.00 |
+| 1004 | PAP-001 | Resma de papel carta 500 hojas | 2026-09-10 | 5 | 119.00 |
+| 1004 | ESC-003 | Cuaderno profesional 100 hojas | 2026-09-10 | 20 | 45.00 |
+
+`Codigo → Descripcion` y `NumFactura → Fecha` son dependencias parciales: cada una usa solo una parte de la clave. Por eso la descripción de la resma se repite en cada factura que la vende y la fecha de la 1004 se repite en cada una de sus líneas. 2FN separa cada dato junto con la parte de la clave de la que depende (la clave va en negrita):
+
+- Facturas (**NumFactura**, Fecha, …)
+- Productos (**Codigo**, Descripcion)
+- Líneas (**NumFactura**, **Codigo**, Cantidad, PrecioUnitario)
+
+`Cantidad` y `PrecioUnitario` se quedan en las líneas porque dependen de la clave completa: cuánto se vendió de ese producto, y a qué precio, en esa factura.
+
+**3FN · Nada depende de un campo que no sea clave.** Después de 2FN, la tabla de facturas todavía guarda los datos del cliente:
+
+| NumFactura | Fecha | DocCliente | Cliente | CiudadCliente |
+| --- | --- | --- | --- | --- |
+| 1001 | 2026-09-01 | 0012345678 | Papelería El Estudiante, S.A. | Ciudad Central |
+| 1004 | 2026-09-10 | 0012345678 | Papelería El Estudiante SA | Cd. Central |
+
+La razón social y la ciudad dependen de `DocCliente`, y `DocCliente` depende de `NumFactura`. Es una dependencia transitiva: `NumFactura → DocCliente → CiudadCliente`. El resultado está a la vista: el mismo cliente aparece escrito de dos formas. 3FN mueve esos datos a su propia tabla y deja en la factura solo la referencia:
+
+- Clientes (**DocCliente**, Cliente, CiudadCliente)
+- Facturas (**NumFactura**, Fecha, DocCliente)
+
+En Access la clave de `tblClientes` será la clave sustituta `IdCliente`, pero la idea es la misma.
+
+> **Concepto:** una frase resume las tres primeras formas: cada campo debe depender de la clave (1FN), de toda la clave (2FN) y de nada más que la clave (3FN).
 
 **No toda repetición es redundancia.** El precio unitario se guarda en cada línea aunque también esté en `tblProductos`. Es el precio histórico de esa venta: si mañana cambia el precio del producto, las facturas viejas no deben cambiar.
 
@@ -160,6 +218,69 @@ erDiagram
 2. En `tblClientes`, intenta borrar el cliente 1.
 3. Crea una factura de prueba para el cliente 5 con una línea y después borra la factura. Su línea desaparece con ella.
 4. Haz la copia de seguridad de la base.
+
+### Para ir más allá · Formas normales superiores (opcional)
+
+La mayoría de las tablas en 3FN cumplen también las formas siguientes. Las excepciones aparecen con claves compuestas que se superponen, con listas independientes y con reglas que combinan tres datos.
+
+**Forma normal de Boyce-Codd (FNBC).** Todo campo o grupo de campos que determina a otro debe ser clave candidata, es decir, una combinación mínima de campos que podría servir de clave principal. 3FN deja pasar un caso que FNBC no: un campo que por sí solo no es clave determina una parte de una clave.
+
+Cada cliente tiene un ejecutivo de cuenta por categoría, y cada ejecutivo atiende una sola categoría:
+
+| Cliente | Categoria | Ejecutivo |
+| --- | --- | --- |
+| Papelería El Estudiante, S.A. | Papelería | Ana Solís |
+| Papelería El Estudiante, S.A. | Tecnología | Bruno Paz |
+| Escuela Técnica Horizonte | Tecnología | Bruno Paz |
+| Consultores Andinos, S.R.L. | Tecnología | Carla Vega |
+
+Las claves candidatas son (Cliente, Categoria) y (Cliente, Ejecutivo). La dependencia `Ejecutivo → Categoria` cumple 3FN porque `Categoria` forma parte de una clave, pero rompe FNBC porque `Ejecutivo` solo no es clave. Por eso el dato «Bruno Paz atiende Tecnología» se escribe dos veces, y no puedes registrar la categoría de un ejecutivo nuevo hasta que tenga un cliente. La solución guarda ese dato una sola vez:
+
+- Ejecutivos (**Ejecutivo**, Categoria)
+- Cartera (**Cliente**, **Ejecutivo**)
+
+> **Ojo:** la nueva estructura ya no impide que un cliente tenga dos ejecutivos de la misma categoría; esa regla hay que comprobarla con una consulta o con código. Cuando FNBC obliga a perder una regla así, muchos diseños se quedan en 3FN.
+
+**Cuarta forma normal (4FN).** Además de FNBC, una tabla no debe juntar dos listas independientes sobre la misma cosa. Supón que un cliente tiene varios teléfonos y varios correos, y que ningún correo va ligado a un teléfono concreto. Si los guardas juntos, tienes que escribir todas las combinaciones:
+
+| Cliente | Telefono | Correo |
+| --- | --- | --- |
+| Consultores Andinos, S.R.L. | 555-0102 | admin@andinos.example |
+| Consultores Andinos, S.R.L. | 555-0102 | compras@andinos.example |
+| Consultores Andinos, S.R.L. | 555-0112 | admin@andinos.example |
+| Consultores Andinos, S.R.L. | 555-0112 | compras@andinos.example |
+
+La clave son los tres campos y no hay otras dependencias funcionales, así que la tabla cumple FNBC. El problema es una dependencia multivaluada: el cliente determina un conjunto de teléfonos y otro de correos, y los dos conjuntos son independientes. Un tercer correo exige dos filas nuevas, una por teléfono; si olvidas una, la tabla sugiere que ese correo solo va con uno de los teléfonos. La solución es una tabla por lista, y entonces un correo nuevo es una sola fila:
+
+- TelefonosCliente (**Cliente**, **Telefono**)
+- CorreosCliente (**Cliente**, **Correo**)
+
+> **Ojo:** si cada correo pertenece a un contacto con su propio teléfono, los datos ya no son independientes y la tabla de tres campos es correcta. La 4FN depende del significado de los datos, no de su aspecto.
+
+**Quinta forma normal (5FN).** Además de 4FN, una tabla no debe guardar como un solo hecho lo que en realidad son varios hechos más pequeños. También se llama forma normal de proyección-unión.
+
+La tabla siguiente dice qué proveedor entrega qué categoría en qué ciudad, y el negocio sigue esta regla: si un proveedor maneja una categoría, reparte en una ciudad y esa categoría tiene demanda en esa ciudad, entonces el proveedor la entrega allí.
+
+| Proveedor | Categoria | Ciudad |
+| --- | --- | --- |
+| Suministros Lema | Accesorios | Puerto Azul |
+| Suministros Lema | Papelería | Ciudad Central |
+| Tecnodistribución | Accesorios | Ciudad Central |
+| Suministros Lema | Accesorios | Ciudad Central |
+
+La cuarta fila no aporta nada nuevo: la regla la deduce de las otras tres. Suministros Lema maneja Accesorios (fila 1), reparte en Ciudad Central (fila 2) y en Ciudad Central hay demanda de Accesorios (fila 3). Si mañana Papelería tiene demanda en Puerto Azul, tienes que deducir a mano que Suministros Lema la entregará allí y agregar esa fila. La tabla mezcla tres hechos de dos partes, y 5FN los separa:
+
+- Maneja (**Proveedor**, **Categoria**)
+- Reparte (**Proveedor**, **Ciudad**)
+- Demanda (**Categoria**, **Ciudad**)
+
+Ahora la nueva demanda es una sola fila en Demanda, y una consulta que une las tres tablas reconstruye la tabla original.
+
+> **Ojo:** dos tablas no bastan. Si unes solo Maneja y Demanda aparece una fila falsa, (Tecnodistribución, Accesorios, Puerto Azul), aunque Tecnodistribución no reparte en Puerto Azul. Reparte es la que la filtra.
+
+Ante una tabla de tres campos, pregúntate si guarda un hecho de tres partes o tres hechos de dos partes. Solo en el segundo caso hay que separarla.
+
+**Más allá de la 5FN.** Existen dos formas más, de interés sobre todo teórico. En la forma normal de dominio-clave (FNDC), toda regla se deduce de los valores permitidos de cada campo y de las claves. En la sexta forma normal (6FN), cada tabla guarda su clave y un solo dato más; la usan las bases que llevan el historial de cada dato, por ejemplo con el precio de un producto y sus fechas de vigencia en una tabla y su existencia en otra.
 
 ## Puntos de control
 
