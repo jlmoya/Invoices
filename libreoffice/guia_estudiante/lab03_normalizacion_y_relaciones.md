@@ -1,0 +1,370 @@
+# Laboratorio 3 · Normalización y relaciones
+
+Hoy partes de facturas guardadas en una sola tabla plana, descubres sus problemas y las divides en tablas relacionadas que Firebird protege con integridad referencial.
+
+## Objetivos
+
+- Detectar redundancia y anomalías de actualización, inserción y borrado.
+- Aplicar la primera, segunda y tercera formas normales.
+- Implementar relaciones uno a muchos con integridad referencial.
+- Resolver una relación muchos a muchos con una tabla intermedia.
+- Explicar la clave foránea como una referencia entre registros.
+
+## Conceptos
+
+**Redundancia y anomalías.** Una tabla plana repite datos: el nombre del cliente aparece en cada una de sus facturas. Esa repetición produce tres anomalías.
+
+| Anomalía | Qué pasa en `factura_plana.csv` |
+| --- | --- |
+| Actualización | Si el cliente cambia de dirección hay que corregir todas sus filas; si olvidas una, los datos se contradicen |
+| Inserción | No puedes registrar un cliente nuevo hasta que compre algo |
+| Borrado | Si borras la única factura de un cliente, pierdes también al cliente |
+
+**Dependencia funcional.** Un campo B depende de un campo A cuando conocer A basta para saber B. Se escribe A → B. En `factura_plana.csv`, `DocCliente → CiudadCliente`: con el documento fiscal sabes la ciudad. Al revés no, porque en una ciudad hay muchos clientes. Las formas normales se definen con esta idea.
+
+**Formas normales.** Son reglas acumulativas: cada una exige la anterior y elimina un tipo más de redundancia.
+
+| Forma | Exige | Elimina |
+| --- | --- | --- |
+| Primera (1FN) | Un solo valor por celda, sin grupos repetidos, y una clave que identifique cada fila | Columnas repetidas y listas dentro de una celda |
+| Segunda (2FN) | 1FN, y que cada campo fuera de la clave dependa de la clave completa | Dependencias parciales |
+| Tercera (3FN) | 2FN, y que ningún campo fuera de la clave dependa de otro campo fuera de la clave | Dependencias transitivas |
+| Boyce-Codd (FNBC) | 3FN, y que todo campo o grupo de campos que determina a otro sea clave candidata | Dependencias hacia una parte de la clave |
+| Cuarta (4FN) | FNBC, y que la tabla no junte dos listas independientes | Dependencias multivaluadas |
+| Quinta (5FN) | 4FN, y que la tabla no guarde como un solo hecho varios hechos más pequeños | Dependencias de unión |
+
+Este laboratorio llega hasta 3FN, el nivel habitual de una base bien diseñada. Las otras tres aparecen en casos especiales; las verás con ejemplos en «Para ir más allá», al final del paso a paso.
+
+```mermaid
+flowchart LR
+    A["Tabla plana<br/>una fila por factura<br/>Producto1, Producto2, Producto3"] -->|"1FN: sin grupos repetidos"| B["Una fila por línea<br/>clave: factura + producto"]
+    B -->|"2FN: sin dependencias parciales"| C["Datos del producto<br/>y de la factura aparte"]
+    C -->|"3FN: sin dependencias transitivas"| D["Datos del cliente<br/>en su propia tabla"]
+```
+
+**1FN · Un valor por celda.** `factura_plana.csv` guarda las líneas en columnas repetidas (aquí solo algunas columnas):
+
+| NumFactura | Producto1 | Cant1 | Producto2 | Cant2 | Producto3 | Cant3 |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1001 | Resma de papel carta 500 hojas | 10 | Bolígrafo azul (caja 12) | 5 | Marcador permanente negro | 12 |
+| 1003 | Monitor 24 pulgadas Full HD | 3 | Cable HDMI 2 m | 3 | | |
+
+La factura 1003 deja columnas vacías, y para saber quién compró un cable HDMI hay que revisar tres columnas. En 1FN cada línea ocupa su propia fila y la clave es (NumFactura, Producto):
+
+| NumFactura | Producto | Cantidad |
+| --- | --- | --- |
+| 1001 | Resma de papel carta 500 hojas | 10 |
+| 1001 | Bolígrafo azul (caja 12) | 5 |
+| 1001 | Marcador permanente negro | 12 |
+
+Tampoco cumple 1FN una celda con una lista, como un teléfono `555-0101, 555-0199`. Los demás datos de la factura, como la fecha y el cliente, se copian ahora en cada fila; las dos formas siguientes se ocupan de esa repetición.
+
+**2FN · Todo depende de la clave completa.** Solo importa cuando la clave es compuesta. Con el código del producto, la tabla de 1FN tiene la clave (NumFactura, Codigo):
+
+| NumFactura | Codigo | Descripcion | Fecha | Cantidad | PrecioUnitario |
+| --- | --- | --- | --- | --- | --- |
+| 1001 | PAP-001 | Resma de papel carta 500 hojas | 2026-09-01 | 10 | 119.00 |
+| 1004 | PAP-001 | Resma de papel carta 500 hojas | 2026-09-10 | 5 | 119.00 |
+| 1004 | ESC-003 | Cuaderno profesional 100 hojas | 2026-09-10 | 20 | 45.00 |
+
+`Codigo → Descripcion` y `NumFactura → Fecha` son dependencias parciales: cada una usa solo una parte de la clave. Por eso la descripción de la resma se repite en cada factura que la vende y la fecha de la 1004 se repite en cada una de sus líneas. 2FN separa cada dato junto con la parte de la clave de la que depende (la clave va en negrita):
+
+- Facturas (**NumFactura**, Fecha, …)
+- Productos (**Codigo**, Descripcion)
+- Líneas (**NumFactura**, **Codigo**, Cantidad, PrecioUnitario)
+
+`Cantidad` y `PrecioUnitario` se quedan en las líneas porque dependen de la clave completa: cuánto se vendió de ese producto, y a qué precio, en esa factura.
+
+**3FN · Nada depende de un campo que no sea clave.** Después de 2FN, la tabla de facturas todavía guarda los datos del cliente:
+
+| NumFactura | Fecha | DocCliente | Cliente | CiudadCliente |
+| --- | --- | --- | --- | --- |
+| 1001 | 2026-09-01 | 0012345678 | Papelería El Estudiante, S.A. | Ciudad Central |
+| 1004 | 2026-09-10 | 0012345678 | Papelería El Estudiante SA | Cd. Central |
+
+La razón social y la ciudad dependen de `DocCliente`, y `DocCliente` depende de `NumFactura`. Es una dependencia transitiva: `NumFactura → DocCliente → CiudadCliente`. El resultado está a la vista: el mismo cliente aparece escrito de dos formas. 3FN mueve esos datos a su propia tabla y deja en la factura solo la referencia:
+
+- Clientes (**DocCliente**, Cliente, CiudadCliente)
+- Facturas (**NumFactura**, Fecha, DocCliente)
+
+En Base la clave de `tblClientes` será la clave sustituta `IdCliente`, pero la idea es la misma.
+
+> **Concepto:** una frase resume las tres primeras formas: cada campo debe depender de la clave (1FN), de toda la clave (2FN) y de nada más que la clave (3FN).
+
+**No toda repetición es redundancia.** El precio unitario se guarda en cada línea aunque también esté en `tblProductos`. Es el precio histórico de esa venta: si mañana cambia el precio del producto, las facturas viejas no deben cambiar.
+
+**La clave foránea es una referencia.** `IdCliente` en `tblFacturas` guarda el valor de la clave de un cliente: es un puntero, pero por valor. La integridad referencial impide referencias colgantes, es decir, facturas que apuntan a clientes que no existen.
+
+> **Conexión:** una referencia colgante en una base de datos equivale a un puntero colgante (dangling pointer) en C.
+
+**Muchos a muchos.** Una factura tiene muchos productos y un producto aparece en muchas facturas. La relación se resuelve con `tblDetalleFactura`, una tabla intermedia cuya clave combina las dos referencias y que además guarda cantidad y precio.
+
+**Composición.** Las líneas no existen sin su factura. Por eso la relación entre facturas y detalle usa eliminación en cascada; las demás relaciones no la usan.
+
+Este es el modelo al que llegarás hoy:
+
+```mermaid
+erDiagram
+    tblClientes ||--o{ tblFacturas : "recibe"
+    tblFacturas ||--|{ tblDetalleFactura : "contiene"
+    tblProductos ||--o{ tblDetalleFactura : "aparece en"
+    tblCategorias ||--o{ tblProductos : "clasifica"
+    tblClientes {
+        long IdCliente PK
+        text DocumentoFiscal UK
+        text RazonSocial
+        text Ciudad
+    }
+    tblFacturas {
+        long IdFactura PK
+        long NumeroFactura UK
+        date Fecha
+        long IdCliente FK
+        decimal TasaImpuesto
+        text Estado
+    }
+    tblDetalleFactura {
+        long IdFactura PK, FK
+        long IdProducto PK, FK
+        long Cantidad
+        decimal PrecioUnitario
+    }
+    tblProductos {
+        long IdProducto PK
+        text Codigo UK
+        text Descripcion
+        long IdCategoria FK
+        decimal Precio
+    }
+    tblCategorias {
+        long IdCategoria PK
+        text Nombre UK
+    }
+```
+
+**El orden de carga es un orden topológico.** El diagrama de relaciones es un grafo dirigido del padre al hijo. Para cargar datos sin violar la integridad, primero van los padres (categorías y clientes), luego productos y facturas, y al final el detalle.
+
+## Paso a paso
+
+### Parte A · Analiza la tabla plana (20 min)
+
+1. Abre `CursoED/datos/factura_plana.csv` con un editor de texto o con Calc. Conserva `DocCliente` como texto, según el laboratorio 2.
+2. Marca los grupos repetidos y los datos del cliente que se repiten.
+3. Compara las filas de las facturas 1001 y 1004: tienen el mismo documento fiscal, pero la razón social y la ciudad están escritas distinto.
+4. Responde: ¿qué harías si una factura tuviera cuatro productos?
+
+### Parte B · Normaliza en papel (20 min)
+
+1. Aplica 1FN: reescribe la tabla con una fila por línea. La clave es (número de factura, producto).
+2. Aplica 2FN: separa lo que depende solo de la factura (fecha, cliente) y lo que depende solo del producto (descripción).
+3. Aplica 3FN: separa los datos del cliente.
+4. Elimina la columna Total: se calcula.
+5. Compara tu resultado con el diagrama de la sección Conceptos.
+
+### Parte C · Crea las tablas nuevas (30 min)
+
+Ejecuta una sentencia por vez en Herramientas → SQL. Lee sus campos antes de ejecutarla y compara después con la vista Diseño de Base.
+
+1. Crea `tblCategorias`. Sus IDs son códigos del catálogo entregado; no necesitan identidad automática.
+
+```sql
+CREATE TABLE "tblCategorias" (
+    "IdCategoria" INTEGER PRIMARY KEY,
+    "Nombre" VARCHAR(50) NOT NULL,
+    CONSTRAINT "UQ_Categorias_Nombre" UNIQUE ("Nombre")
+);
+```
+
+2. Anexa `categorias.csv` con Calc, usando UTF-8, coma, encabezados y asignación de columnas del laboratorio 2. Verifica 11 categorías antes de añadir la relación con los productos ya importados.
+3. Crea `tblFacturas`:
+
+```sql
+CREATE TABLE "tblFacturas" (
+    "IdFactura" INTEGER GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+    "NumeroFactura" INTEGER CHECK ("NumeroFactura" > 0),
+    "Fecha" DATE DEFAULT CURRENT_DATE NOT NULL,
+    "IdCliente" INTEGER NOT NULL,
+    "TasaImpuesto" DECIMAL(9,4) DEFAULT 0.16 NOT NULL,
+    "Estado" VARCHAR(10) DEFAULT 'Borrador' NOT NULL,
+    "Observaciones" BLOB SUB_TYPE TEXT,
+    CONSTRAINT "UQ_Facturas_Numero" UNIQUE ("NumeroFactura"),
+    CONSTRAINT "CK_Facturas_Tasa" CHECK ("TasaImpuesto" BETWEEN 0 AND 1),
+    CONSTRAINT "CK_Facturas_Estado" CHECK (
+        "Estado" IN ('Borrador', 'Emitida', 'Pagada', 'Anulada'))
+);
+```
+
+`NumeroFactura` admite `NULL` mientras sea borrador. `UNIQUE` impide repetir un número asignado, pero permite varios borradores sin número. La tasa se almacena como `0.16`, no como `16`; su formato puede mostrar 16 %. El valor predeterminado permite una captura inicial; en la sesión 5 copiarás la tasa vigente de los parámetros.
+
+4. Crea `tblDetalleFactura`. La clave compuesta identifica un producto dentro de una factura; en este modelo no se repite ese producto en dos líneas de la misma factura.
+
+```sql
+CREATE TABLE "tblDetalleFactura" (
+    "IdFactura" INTEGER NOT NULL,
+    "IdProducto" INTEGER NOT NULL,
+    "Cantidad" INTEGER DEFAULT 1 NOT NULL,
+    "PrecioUnitario" DECIMAL(18,4) NOT NULL,
+    CONSTRAINT "PK_DetalleFactura" PRIMARY KEY ("IdFactura", "IdProducto"),
+    CONSTRAINT "CK_Detalle_Cantidad" CHECK ("Cantidad" > 0),
+    CONSTRAINT "CK_Detalle_Precio" CHECK ("PrecioUnitario" >= 0)
+);
+```
+
+Actualiza la lista de tablas. En Diseño, reconoce las dos marcas de clave. Una clave compuesta no es dos claves principales independientes: la pareja debe ser única.
+
+### Parte D · Crea y observa las relaciones (25 min)
+
+Las referencias se convierten en restricciones del motor. Ejecuta cada `ALTER TABLE` por separado; con los datos actuales deben funcionar.
+
+```sql
+ALTER TABLE "tblProductos" ADD CONSTRAINT "FK_Productos_Categoria"
+    FOREIGN KEY ("IdCategoria") REFERENCES "tblCategorias" ("IdCategoria");
+```
+
+```sql
+ALTER TABLE "tblFacturas" ADD CONSTRAINT "FK_Facturas_Cliente"
+    FOREIGN KEY ("IdCliente") REFERENCES "tblClientes" ("IdCliente");
+```
+
+```sql
+ALTER TABLE "tblDetalleFactura" ADD CONSTRAINT "FK_Detalle_Factura"
+    FOREIGN KEY ("IdFactura") REFERENCES "tblFacturas" ("IdFactura")
+    ON DELETE CASCADE;
+```
+
+```sql
+ALTER TABLE "tblDetalleFactura" ADD CONSTRAINT "FK_Detalle_Producto"
+    FOREIGN KEY ("IdProducto") REFERENCES "tblProductos" ("IdProducto");
+```
+
+1. Cierra SQL. Elige Herramientas → Relaciones y añade las cinco tablas. Si abriste el diagrama antes del SQL, ciérralo y vuelve a abrirlo para refrescar los metadatos.
+2. Ordena los padres arriba y el detalle abajo. Debes ver las cuatro relaciones. Abre las propiedades de cada línea y reconoce los campos relacionados; solamente factura → detalle lleva eliminación en cascada. No crees por segunda vez las relaciones que ya expresa el SQL.
+3. Guarda la distribución visual y captura el diagrama. Esa distribución es una ayuda de Base; la integridad la impone Firebird incluso si escribes desde Basic.
+4. Como alternativa para una base vacía, el editor de Relaciones permite unir campos y elegir acciones de actualización y borrado. El SQL de arriba documenta inequívocamente las reglas que queremos, aunque los nombres y símbolos del editor cambien entre versiones.
+
+> **Si falla una relación:** comprueba tipos `INTEGER` a ambos lados y padres existentes. Por ejemplo, los productos requieren las categorías antes de crear su referencia. Dibujar una flecha en Mermaid no crea una restricción real.
+
+### Parte E · Carga en orden topológico (15 min)
+
+1. Prueba una referencia huérfana controlada en Herramientas → SQL:
+
+```sql
+INSERT INTO "tblDetalleFactura" ("IdFactura", "IdProducto", "Cantidad", "PrecioUnitario")
+VALUES (1, 11, 1, 119.00);
+```
+
+Firebird debe rechazarla porque aún no hay facturas. El motor revierte esa sentencia; no se carga una línea incompleta. Este intento evita un asistente que podría anexar parcialmente un archivo si aceptaras saltar errores.
+
+2. Anexa `facturas.csv` en `tblFacturas`, luego `detalle_factura.csv` en `tblDetalleFactura`, usando Calc. `Fecha` es Fecha AMD; `TasaImpuesto` y `PrecioUnitario` son números con punto decimal. Asigna `IdFactura` explícito y deja `Observaciones`, que no existe en el CSV, sin asignar.
+3. Verifica 7 facturas y 16 líneas. El encabezado con `IdFactura` 6 es borrador y su `NumeroFactura` vacío debe ser nulo, no cero. Una celda vacía al anexar debe mapearse como `NULL`.
+4. Reinicia la identidad después de importar:
+
+```sql
+ALTER TABLE "tblFacturas" ALTER "IdFactura" RESTART WITH 7;
+```
+
+En el Firebird 3 del aula, la próxima alta sin ID toma 8 (ver la diferencia con motores posteriores en el laboratorio 2). Los números de factura y las identidades no son la misma cosa.
+
+### Parte F · Prueba la integridad (10 min)
+
+1. En `tblDetalleFactura`, intenta agregar una línea de la factura 1 con producto 99. Debe rechazarse: no existe el producto.
+2. En `tblClientes`, intenta borrar el cliente 1. Debe rechazarse porque tiene facturas.
+3. En `tblFacturas`, crea una factura de prueba para el cliente 5, con estado Borrador y número vacío. Anota su `IdFactura`, guarda y añade una línea válida en el detalle con ese ID. Borra después el encabezado: su línea debe desaparecer por la cascada.
+4. Prueba una cantidad cero y un estado `Revisada`: el `CHECK` correspondiente debe rechazarlos. Cancela las filas rechazadas; confirma que siguen las 7 facturas y 16 líneas originales.
+5. Guarda, cierra y copia `Facturacion.odb` como `copias/Facturacion_lab03.odb`.
+
+### Para ir más allá · Formas normales superiores (opcional)
+
+La mayoría de las tablas en 3FN cumplen también las formas siguientes. Las excepciones aparecen con claves compuestas que se superponen, con listas independientes y con reglas que combinan tres datos.
+
+**Forma normal de Boyce-Codd (FNBC).** Todo campo o grupo de campos que determina a otro debe ser clave candidata, es decir, una combinación mínima de campos que podría servir de clave principal. 3FN deja pasar un caso que FNBC no: un campo que por sí solo no es clave determina una parte de una clave.
+
+Cada cliente tiene un ejecutivo de cuenta por categoría, y cada ejecutivo atiende una sola categoría:
+
+| Cliente | Categoria | Ejecutivo |
+| --- | --- | --- |
+| Papelería El Estudiante, S.A. | Papelería | Ana Solís |
+| Papelería El Estudiante, S.A. | Tecnología | Bruno Paz |
+| Escuela Técnica Horizonte | Tecnología | Bruno Paz |
+| Consultores Andinos, S.R.L. | Tecnología | Carla Vega |
+
+Las claves candidatas son (Cliente, Categoria) y (Cliente, Ejecutivo). La dependencia `Ejecutivo → Categoria` cumple 3FN porque `Categoria` forma parte de una clave, pero rompe FNBC porque `Ejecutivo` solo no es clave. Por eso el dato «Bruno Paz atiende Tecnología» se escribe dos veces, y no puedes registrar la categoría de un ejecutivo nuevo hasta que tenga un cliente. La solución guarda ese dato una sola vez:
+
+- Ejecutivos (**Ejecutivo**, Categoria)
+- Cartera (**Cliente**, **Ejecutivo**)
+
+> **Ojo:** la nueva estructura ya no impide que un cliente tenga dos ejecutivos de la misma categoría; esa regla hay que comprobarla con una consulta o con código. Cuando FNBC obliga a perder una regla así, muchos diseños se quedan en 3FN.
+
+**Cuarta forma normal (4FN).** Además de FNBC, una tabla no debe juntar dos listas independientes sobre la misma cosa. Supón que un cliente tiene varios teléfonos y varios correos, y que ningún correo va ligado a un teléfono concreto. Si los guardas juntos, tienes que escribir todas las combinaciones:
+
+| Cliente | Telefono | Correo |
+| --- | --- | --- |
+| Consultores Andinos, S.R.L. | 555-0102 | admin@andinos.example |
+| Consultores Andinos, S.R.L. | 555-0102 | compras@andinos.example |
+| Consultores Andinos, S.R.L. | 555-0112 | admin@andinos.example |
+| Consultores Andinos, S.R.L. | 555-0112 | compras@andinos.example |
+
+La clave son los tres campos y no hay otras dependencias funcionales, así que la tabla cumple FNBC. El problema es una dependencia multivaluada: el cliente determina un conjunto de teléfonos y otro de correos, y los dos conjuntos son independientes. Un tercer correo exige dos filas nuevas, una por teléfono; si olvidas una, la tabla sugiere que ese correo solo va con uno de los teléfonos. La solución es una tabla por lista, y entonces un correo nuevo es una sola fila:
+
+- TelefonosCliente (**Cliente**, **Telefono**)
+- CorreosCliente (**Cliente**, **Correo**)
+
+> **Ojo:** si cada correo pertenece a un contacto con su propio teléfono, los datos ya no son independientes y la tabla de tres campos es correcta. La 4FN depende del significado de los datos, no de su aspecto.
+
+**Quinta forma normal (5FN).** Además de 4FN, una tabla no debe guardar como un solo hecho lo que en realidad son varios hechos más pequeños. También se llama forma normal de proyección-unión.
+
+La tabla siguiente dice qué proveedor entrega qué categoría en qué ciudad, y el negocio sigue esta regla: si un proveedor maneja una categoría, reparte en una ciudad y esa categoría tiene demanda en esa ciudad, entonces el proveedor la entrega allí.
+
+| Proveedor | Categoria | Ciudad |
+| --- | --- | --- |
+| Suministros Lema | Accesorios | Puerto Azul |
+| Suministros Lema | Papelería | Ciudad Central |
+| Tecnodistribución | Accesorios | Ciudad Central |
+| Suministros Lema | Accesorios | Ciudad Central |
+
+La cuarta fila no aporta nada nuevo: la regla la deduce de las otras tres. Suministros Lema maneja Accesorios (fila 1), reparte en Ciudad Central (fila 2) y en Ciudad Central hay demanda de Accesorios (fila 3). Si mañana Papelería tiene demanda en Puerto Azul, tienes que deducir a mano que Suministros Lema la entregará allí y agregar esa fila. La tabla mezcla tres hechos de dos partes, y 5FN los separa:
+
+- Maneja (**Proveedor**, **Categoria**)
+- Reparte (**Proveedor**, **Ciudad**)
+- Demanda (**Categoria**, **Ciudad**)
+
+Ahora la nueva demanda es una sola fila en Demanda, y una consulta que une las tres tablas reconstruye la tabla original.
+
+> **Ojo:** dos tablas no bastan. Si unes solo Maneja y Demanda aparece una fila falsa, (Tecnodistribución, Accesorios, Puerto Azul), aunque Tecnodistribución no reparte en Puerto Azul. Reparte es la que la filtra.
+
+Ante una tabla de tres campos, pregúntate si guarda un hecho de tres partes o tres hechos de dos partes. Solo en el segundo caso hay que separarla.
+
+**Más allá de la 5FN.** Existen dos formas más, de interés sobre todo teórico. En la forma normal de dominio-clave (FNDC), toda regla se deduce de los valores permitidos de cada campo y de las claves. En la sexta forma normal (6FN), cada tabla guarda su clave y un solo dato más; la usan las bases que llevan el historial de cada dato, por ejemplo con el precio de un producto y sus fechas de vigencia en una tabla y su existencia en otra.
+
+## Puntos de control
+
+- [ ] Hay 11 categorías, 7 facturas y 16 líneas de detalle.
+- [ ] Herramientas → Relaciones muestra las 4 referencias y una sola eliminación en cascada.
+- [ ] Firebird rechaza una línea con un producto inexistente y el borrado de un cliente con facturas.
+- [ ] Al borrar la factura de prueba se borra también su línea.
+
+## Tarea 3 · Normaliza una tabla de pedidos
+
+La empresa guarda sus pedidos a proveedores en esta tabla plana:
+
+| NumPedido | Fecha | Proveedor | TelProveedor | Producto1 | Cant1 | Costo1 | Producto2 | Cant2 | Costo2 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| P-01 | 2026-09-02 | Suministros Lema | 555-0201 | Resma de papel carta | 50 | 95.00 | Bolígrafo azul (caja 12) | 20 | 55.00 |
+| P-02 | 2026-09-09 | Suministros Lema | 555-0299 | Cable HDMI 2 m | 30 | 110.00 | | | |
+| P-03 | 2026-09-12 | Tecnodistribución | 555-0310 | Monitor 24 pulgadas | 5 | 2200.00 | Teclado inalámbrico | 5 | 360.00 |
+
+1. Señala un ejemplo de cada anomalía en esta tabla.
+2. Normalízala hasta 3FN y dibuja el modelo en Mermaid con claves y cardinalidades.
+3. Crea las tablas en Base con SQL Firebird, reutilizando la `tblProveedores` de la tarea 2, con sus relaciones.
+4. Indica qué relación llevaría eliminación en cascada y por qué.
+
+## Autoevaluación
+
+1. ¿Qué anomalía aparece si guardas la dirección del cliente en cada factura?
+2. ¿Por qué `PrecioUnitario` va en `tblDetalleFactura` aunque exista `tblProductos.Precio`?
+3. ¿Por qué la cascada va entre facturas y detalle, y no entre clientes y facturas?
+4. ¿En qué orden cargarías categorías, detalle, clientes, productos y facturas?
+
+## Referencia
+
+[Restricciones, claves y acciones referenciales en Firebird 3](https://www.firebirdsql.org/file/documentation/html/en/refdocs/fblangref30/firebird-30-language-reference.html).

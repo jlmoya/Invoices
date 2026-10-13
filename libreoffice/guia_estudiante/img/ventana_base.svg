@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 400" width="760" height="400" font-family="Helvetica, Arial, sans-serif" role="img" aria-labelledby="title desc">
+  <title id="title">Las zonas de la ventana principal de LibreOffice Base</title>
+  <desc id="desc">Menús y herramientas arriba; cuatro tipos de objetos a la izquierda; tareas y objetos guardados a la derecha; conexión Firebird en la barra inferior. Los formularios y el editor Basic se abren en otras ventanas.</desc>
+  <rect width="760" height="400" fill="#fff"/>
+  <text x="20" y="27" font-size="16" font-weight="600" fill="#1f2937">La ventana principal de LibreOffice Base</text>
+  <rect x="20" y="45" width="460" height="325" fill="#fff" stroke="#9ca3af"/>
+  <rect x="20" y="45" width="460" height="24" fill="#e5e7eb"/>
+  <text x="34" y="61" font-size="11" fill="#374151">Facturacion.odb — LibreOffice Base</text>
+  <rect x="20" y="69" width="460" height="25" fill="#f3f4f6"/>
+  <g font-size="11" fill="#374151"><text x="34" y="85">Archivo</text><text x="89" y="85">Editar</text><text x="138" y="85">Ver</text><text x="172" y="85">Insertar</text><text x="229" y="85">Herramientas</text><text x="316" y="85">Ventana</text><text x="380" y="85">Ayuda</text></g>
+  <rect x="20" y="94" width="460" height="34" fill="#f9fafb" stroke="#d1d5db"/>
+  <g fill="#d1d5db"><rect x="34" y="102" width="18" height="18" rx="3"/><rect x="62" y="102" width="18" height="18" rx="3"/><rect x="90" y="102" width="18" height="18" rx="3"/><rect x="132" y="102" width="18" height="18" rx="3"/><rect x="160" y="102" width="18" height="18" rx="3"/></g>
+  <rect x="20" y="128" width="120" height="218" fill="#f3f4f6" stroke="#d1d5db"/>
+  <g font-size="12" fill="#1f2937"><text x="36" y="151" font-weight="600">Base de datos</text><rect x="30" y="163" width="100" height="29" rx="3" fill="#dbeafe"/><text x="44" y="183">Tablas</text><text x="44" y="221">Consultas</text><text x="44" y="261">Formularios</text><text x="44" y="301">Informes</text></g>
+  <rect x="140" y="128" width="340" height="112" fill="#fff" stroke="#d1d5db"/>
+  <rect x="140" y="128" width="340" height="25" fill="#e5e7eb"/>
+  <g font-size="11" fill="#1f2937"><text x="153" y="145" font-weight="600">Tareas</text><text x="157" y="171" fill="#2563eb">Crear tabla en vista de diseño...</text><text x="157" y="196" fill="#2563eb">Usar el asistente para crear una tabla...</text><text x="157" y="221" fill="#2563eb">Crear vista...</text></g>
+  <rect x="140" y="240" width="340" height="106" fill="#fff" stroke="#d1d5db"/>
+  <rect x="140" y="240" width="340" height="25" fill="#e5e7eb"/>
+  <g font-size="12" fill="#1f2937"><text x="153" y="257" font-weight="600">Tablas</text><text x="158" y="285">tblClientes</text><text x="158" y="310">tblProductos</text><text x="158" y="333" font-size="10" fill="#6b7280">Los objetos aparecen después de crearlos.</text></g>
+  <rect x="20" y="346" width="460" height="24" fill="#e5e7eb"/>
+  <text x="34" y="362" font-size="11" fill="#374151">Firebird integrado</text>
+  <g fill="#2563eb"><circle cx="20" cy="81" r="9"/><circle cx="20" cy="111" r="9"/><circle cx="20" cy="245" r="9"/><circle cx="480" cy="180" r="9"/><circle cx="480" cy="292" r="9"/><circle cx="20" cy="358" r="9"/></g>
+  <g font-size="11" fill="#fff" text-anchor="middle" font-weight="700"><text x="20" y="85">1</text><text x="20" y="115">2</text><text x="20" y="249">3</text><text x="480" y="184">4</text><text x="480" y="296">5</text><text x="20" y="362">6</text></g>
+  <g font-size="12" fill="#1f2937" font-weight="600"><text x="510" y="82">1. Menús</text><text x="510" y="129">2. Herramientas</text><text x="510" y="176">3. Tipos de objetos</text><text x="510" y="223">4. Tareas</text><text x="510" y="270">5. Objetos guardados</text><text x="510" y="317">6. Conexión del motor</text></g>
+  <g font-size="11" fill="#4b5563"><text x="510" y="99">Archivo, SQL, relaciones y macros</text><text x="510" y="146">Acciones habituales</text><text x="510" y="193">Tablas, consultas, formularios e informes</text><text x="510" y="240">Crear y diseñar el tipo seleccionado</text><text x="510" y="287">Abrir datos o editar un diseño</text><text x="510" y="334">En este curso: Firebird integrado</text><text x="20" y="393">Esquema orientativo. Formularios Writer y editor Basic se abren en ventanas propias.</text></g>
+</svg>

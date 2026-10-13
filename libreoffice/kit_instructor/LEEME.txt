@@ -1,0 +1,22 @@
+KIT DEL INSTRUCTOR — contiene soluciones
+Introducción a las Estructuras de Datos — LibreOffice Base
+
+basic/clsFactura.bas            Solución de la clase Factura, sesión 8.
+basic/modConstruirSolucion.bas  Tablas, restricciones, relaciones,
+                               datos de ejemplo, vistas y consulta por periodo.
+basic/modSolucionesTareas.bas   Profundidad y ruta del árbol, tarea 6.
+
+1. Crea y guarda una base vacía Facturacion_Solucion.odb con Firebird integrado.
+2. Crea los módulos de la biblioteca Standard del documento y pega los
+   archivos UTF-8. Usa clsFactura.bas del instructor en el módulo clsFactura,
+   en lugar de la plantilla del estudiante; nunca pegues ambas.
+3. Ejecuta el Sub EjecutarConstructor en la base vacía, según la guía del
+   instructor. Este llama a la función ConstruirSolucion.
+4. Ejecuta EjecutarPruebas y EjecutarRepositorio de modPruebasObjetos,
+   que llaman a ProbarReglas y ProbarRepositorio.
+5. Construye los formularios y el informe siguiendo el laboratorio 5.
+6. Guarda y cierra la base; haz la copia de seguridad con el archivo cerrado.
+
+Consulta guia_instructor/00_inicio.md para el orden completo, los requisitos
+de Java, la configuración de macros y los resultados esperados.
+Conserva UTF-8/LF. Entrega a estudiantes únicamente su guía y su kit.

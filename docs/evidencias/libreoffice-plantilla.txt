@@ -1,0 +1,119 @@
+Perfil y base temporales aislados; el script imprime su ruta al ejecutarse.
+INICIO
+Base construida: 7 tablas, 6 relaciones, 10 vistas y 1 consulta con parámetros.
+CÓDIGO DE LA GUÍA DE FORMULARIOS: compilado
+FIREBIRD 3.0.13
+Subtotal: 0.00
+Impuesto: 0.00
+Total: 0.00
+FALLA: Totales 9146.70 / 1463.47 / 10610.17
+Correcto: Rechaza agregar líneas después de emitir
+
+FALLA: Rechaza emitir sin líneas
+FALLA: Rechaza emitir sin cliente
+FALLA: Rechaza anular un borrador
+Correcto: Rechaza producto duplicado
+Correcto: Rechaza cantidad cero
+Correcto: Rechaza precio negativo
+Correcto: Rechaza número cero
+Correcto: Rechaza agregar después de emitir
+Correcto: Rechaza cambiar cliente emitido
+Correcto: Rechaza reabrir emitida mediante Cargar
+FALLA: Permite anular una emitida
+FALLA: Rechaza pagar una anulada
+Correcto: Permite pagar emitida
+FALLA: Rechaza anular pagada
+Correcto: Rechaza cambiar identidad persistida
+Correcto: Línea inmutable
+Correcto: Mitad hacia arriba
+Correcto: DECIMAL(18,4) conserva todos sus dígitos
+Correcto: Porcentaje exacto en todo el rango decimal
+Correcto: Redondeo exacto inmediatamente debajo de mitad
+Correcto: Redondeo exacto en mitad
+
+Factura 1003 (Emitida)
+FALLA: Carga precios históricos y totales
+Correcto: Rechaza factura inexistente
+FALLA: Guarda y recarga borrador con identidad nueva
+FALLA: Actualiza detalle y conserva identidad
+FALLA: Recarga dos líneas con orden distinto y precios pactados
+FALLA: Revierte actualización completa por FK inválida
+Correcto: Número emitido único y siguiente sin colisión
+Correcto: Guarda pago con líneas reordenadas e identidad estable
+Correcto: Revierte alta y no asigna identidad al objeto
+Correcto: UNIQUE rechaza número repetido y revierte alta
+
+n = 1000
+Lineal: posición 1000 en 1000 pasos
+Binaria: posición 1000 en 10 pasos
+Currency 0.1 + 0.2 = 0.3000
+HALF_UP 1.005 = 1.01
+Sin descuento: 0.0000
+Descuento del 10%: 100.0000
+1: 0 | Catálogo
+6: 3 | Catálogo > Tecnología > Computadoras > Portátiles
+8: 3 | Catálogo > Tecnología > Accesorios > Periféricos
+- Catálogo
+    - Papelería
+        - Escritura
+        - Papel
+    - Tecnología
+        - Accesorios
+            - Cables y adaptadores
+            - Periféricos
+        - Computadoras
+            - Escritorio
+            - Portátiles
+
+CAB-001 -> 3
+CAB-002 -> 1
+CAB-003 -> 2
+ESC-001 -> 5
+ESC-002 -> 12
+ESC-003 -> 20
+PAP-001 -> 19
+PCE-001 -> 1
+PER-001 -> 3
+PER-002 -> 2
+PER-003 -> 2
+PER-004 -> 1
+POR-001 -> 2
+POR-002 -> 1
+
+PILA: dos cambios y dos deshacer correctos
+1002 | 2026-09-03
+1003 | 2026-09-08
+1005 | 2026-09-15
+
+COLA: se atendió primero 1002
+DATOS Y TOTALES CORRECTOS
+SQL DE BASE: SELECT "NumeroFactura", "Fecha", "RazonSocial", "Total" FROM "qryTotalesFactura" WHERE "Fecha" BETWEEN ? AND ? ORDER BY "Fecha"
+CONSULTA PARAMETRIZADA: siete facturas en septiembre
+REAPERTURA: siete facturas conservadas
+MACROS DEL DOCUMENTO: Factura 1003 (Emitida)
+FALLA: Carga precios históricos y totales
+Correcto: Rechaza factura inexistente
+FALLA: Guarda y recarga borrador con identidad nueva
+FALLA: Actualiza detalle y conserva identidad
+FALLA: Recarga dos líneas con orden distinto y precios pactados
+FALLA: Revierte actualización completa por FK inválida
+Correcto: Número emitido único y siguiente sin colisión
+Correcto: Guarda pago con líneas reordenadas e identidad estable
+Correcto: Revierte alta y no asigna identidad al objeto
+Correcto: UNIQUE rechaza número repetido y revierte alta
+
+CONEXIÓN DEL DOCUMENTO: Factura 1003 (Emitida)
+FALLA: Carga precios históricos y totales
+Correcto: Rechaza factura inexistente
+FALLA: Guarda y recarga borrador con identidad nueva
+FALLA: Actualiza detalle y conserva identidad
+FALLA: Recarga dos líneas con orden distinto y precios pactados
+FALLA: Revierte actualización completa por FK inválida
+Correcto: Número emitido único y siguiente sin colisión
+Correcto: Guarda pago con líneas reordenadas e identidad estable
+Correcto: Revierte alta y no asigna identidad al objeto
+Correcto: UNIQUE rechaza número repetido y revierte alta
+
+FIN
+
+Plantilla: se detectaron las reglas pendientes como se esperaba.

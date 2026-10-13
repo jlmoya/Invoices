@@ -1,0 +1,36 @@
+KIT DEL ESTUDIANTE
+Introducción a las Estructuras de Datos — LibreOffice Base
+
+1. Crea una carpeta local CursoED en tu carpeta personal.
+2. Copia en ella datos y basic. Trabaja fuera de carpetas sincronizadas.
+3. Conserva UTF-8 y LF. Los CSV se abren en Calc con separador coma,
+   delimitador de texto comillas dobles y configuración Inglés (EE. UU.)
+   para interpretar el punto decimal. Conserva identificadores fiscales como texto.
+4. Usa Base con Firebird integrado; no HSQLDB.
+
+datos/
+  clientes.csv, productos.csv                  Laboratorio 2
+  factura_plana.csv, categorias.csv,
+  facturas.csv, detalle_factura.csv             Laboratorio 3
+
+basic/
+  modRegistros.bas                             Laboratorio 2
+  modConstantes.bas, modEstructuras.bas         Laboratorio 4 (configuración
+                                              opcional), 5 y 6
+  modConstantes.bas, clsLineaFactura.bas,
+  clsFactura_plantilla.bas,
+  clsRepositorioFacturas.bas,
+  modPruebasObjetos.bas                        Laboratorio 8
+  IDescuento.bas, clsSinDescuento.bas,
+  clsDescuentoPorcentaje.bas,
+  modPolimorfismo.bas                          Laboratorio 8, opcional
+
+Abre los .bas como texto UTF-8 y pega su contenido en módulos de la
+biblioteca Standard de Facturacion.odb, mediante Herramientas > Macros >
+Organizar macros > Basic. El nombre del módulo coincide con el archivo,
+salvo clsFactura_plantilla.bas, que se pega en el módulo clsFactura.
+No importes estos módulos como si fueran archivos de clase de VBA.
+
+Los procedimientos de demostración muestran mensajes; no necesitan una
+ventana Inmediato. Las instrucciones y los puntos de control completos
+están en las guías de cada laboratorio.

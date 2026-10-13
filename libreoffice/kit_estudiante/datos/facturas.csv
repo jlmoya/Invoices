@@ -1,0 +1,8 @@
+IdFactura,NumeroFactura,Fecha,IdCliente,TasaImpuesto,Estado
+1,1001,2026-09-01,1,0.16,"Pagada"
+2,1002,2026-09-03,3,0.16,"Emitida"
+3,1003,2026-09-08,2,0.16,"Emitida"
+4,1004,2026-09-10,1,0.16,"Pagada"
+5,1005,2026-09-15,6,0.16,"Emitida"
+6,,2026-09-18,5,0.16,"Borrador"
+7,1006,2026-09-21,7,0.16,"Anulada"

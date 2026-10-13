@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 410" width="760" height="410" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <rect width="760" height="410" fill="#ffffff"/>
+  <text x="20" y="28" font-size="16" font-weight="600" fill="#1f2937">Cada dato de la factura va a una tabla, o se calcula</text>
+  <rect x="20" y="44" width="470" height="320" rx="6" fill="#ffffff" stroke="#9ca3af"/>
+  <text x="40" y="76" font-size="14" font-weight="600" fill="#1f2937">Distribuidora Aula</text>
+  <text x="40" y="94" font-size="11" fill="#4b5563">Av. del Conocimiento 100 · Doc. 0011223344</text>
+  <text x="470" y="76" font-size="14" font-weight="600" fill="#1f2937" text-anchor="end">FACTURA N.º 1001</text>
+  <text x="470" y="94" font-size="11" fill="#4b5563" text-anchor="end">Fecha: 01/09/2026</text>
+  <text x="40" y="132" font-size="12" font-weight="600" fill="#1f2937">Cliente: Papelería El Estudiante, S.A.</text>
+  <text x="40" y="150" font-size="11" fill="#4b5563">Doc. fiscal 0012345678 · Av. Universidad 120, Ciudad Central</text>
+  <g font-size="11" font-weight="600" fill="#4b5563">
+    <text x="44" y="196">Código</text>
+    <text x="100" y="196">Descripción</text>
+    <text x="320" y="196" text-anchor="end">Cant.</text>
+    <text x="390" y="196" text-anchor="end">Precio</text>
+    <text x="470" y="196" text-anchor="end">Importe</text>
+  </g>
+  <line x1="34" y1="202" x2="478" y2="202" stroke="#d1d5db"/>
+  <g font-size="11.5" fill="#1f2937">
+    <text x="44" y="220">PAP-001</text><text x="100" y="220">Resma de papel carta 500 hojas</text>
+    <text x="320" y="220" text-anchor="end">10</text><text x="390" y="220" text-anchor="end">119.00</text><text x="470" y="220" text-anchor="end">1,190.00</text>
+    <text x="44" y="240">ESC-001</text><text x="100" y="240">Bolígrafo azul (caja 12)</text>
+    <text x="320" y="240" text-anchor="end">5</text><text x="390" y="240" text-anchor="end">72.00</text><text x="470" y="240" text-anchor="end">360.00</text>
+    <text x="44" y="260">ESC-002</text><text x="100" y="260">Marcador permanente negro</text>
+    <text x="320" y="260" text-anchor="end">12</text><text x="390" y="260" text-anchor="end">24.50</text><text x="470" y="260" text-anchor="end">294.00</text>
+    <text x="390" y="292" text-anchor="end">Subtotal</text><text x="470" y="292" text-anchor="end">1,844.00</text>
+    <text x="390" y="312" text-anchor="end">Impuesto 16 %</text><text x="470" y="312" text-anchor="end">295.04</text>
+  </g>
+  <line x1="300" y1="322" x2="478" y2="322" stroke="#9ca3af"/>
+  <text x="390" y="342" font-size="12.5" font-weight="700" fill="#1f2937" text-anchor="end">Total</text>
+  <text x="470" y="342" font-size="12.5" font-weight="700" fill="#1f2937" text-anchor="end">2,139.04</text>
+  <g fill="none" stroke-width="1.5" stroke-dasharray="5 3">
+    <rect x="30" y="56" width="262" height="48" rx="4" stroke="#2563eb"/>
+    <rect x="330" y="56" width="150" height="48" rx="4" stroke="#2563eb"/>
+    <rect x="30" y="114" width="450" height="46" rx="4" stroke="#2563eb"/>
+    <rect x="30" y="170" width="262" height="100" rx="4" stroke="#2563eb"/>
+    <rect x="296" y="170" width="100" height="100" rx="4" stroke="#2563eb"/>
+    <rect x="400" y="170" width="80" height="182" rx="4" stroke="#ea580c"/>
+  </g>
+  <g font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">
+    <circle cx="30" cy="56" r="9" fill="#2563eb"/><text x="30" y="60">1</text>
+    <circle cx="330" cy="56" r="9" fill="#2563eb"/><text x="330" y="60">2</text>
+    <circle cx="30" cy="114" r="9" fill="#2563eb"/><text x="30" y="118">3</text>
+    <circle cx="30" cy="170" r="9" fill="#2563eb"/><text x="30" y="174">4</text>
+    <circle cx="296" cy="170" r="9" fill="#2563eb"/><text x="296" y="174">5</text>
+    <circle cx="400" cy="170" r="9" fill="#ea580c"/><text x="400" y="174">6</text>
+    <circle cx="518" cy="70" r="10" fill="#2563eb"/><text x="518" y="74">1</text>
+    <circle cx="518" cy="124" r="10" fill="#2563eb"/><text x="518" y="128">2</text>
+    <circle cx="518" cy="178" r="10" fill="#2563eb"/><text x="518" y="182">3</text>
+    <circle cx="518" cy="232" r="10" fill="#2563eb"/><text x="518" y="236">4</text>
+    <circle cx="518" cy="286" r="10" fill="#2563eb"/><text x="518" y="290">5</text>
+    <circle cx="518" cy="340" r="10" fill="#ea580c"/><text x="518" y="344">6</text>
+  </g>
+  <g font-size="12.5" font-weight="600" fill="#1f2937">
+    <text x="536" y="74">Emisor</text>
+    <text x="536" y="128">Número y fecha</text>
+    <text x="536" y="182">Cliente</text>
+    <text x="536" y="236">Código y descripción</text>
+    <text x="536" y="290">Cantidad y precio pactado</text>
+    <text x="536" y="344">Importes y totales</text>
+  </g>
+  <g font-size="11" fill="#4b5563">
+    <text x="536" y="91">tblParametros: un solo registro</text>
+    <text x="536" y="145">tblFacturas</text>
+    <text x="536" y="199">tblClientes</text>
+    <text x="536" y="253">tblProductos</text>
+    <text x="536" y="307">tblDetalleFactura</text>
+    <text x="536" y="361">Se calculan: no se guardan</text>
+  </g>
+  <rect x="20" y="382" width="14" height="14" fill="none" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="4 2"/>
+  <text x="40" y="394" font-size="11" fill="#4b5563">Se guarda en una tabla</text>
+  <rect x="200" y="382" width="14" height="14" fill="none" stroke="#ea580c" stroke-width="1.5" stroke-dasharray="4 2"/>
+  <text x="220" y="394" font-size="11" fill="#4b5563">Se calcula a partir de otros datos</text>
+</svg>

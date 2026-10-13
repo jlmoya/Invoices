@@ -1,26 +1,24 @@
-# Curso: Introducción a las Estructuras de Datos con Microsoft Access
+# Introducción a las Estructuras de Datos: dos cursos de facturación
 
-Materiales del curso-laboratorio de 8 sesiones de 2 horas · Versión del 30 de septiembre de 2026
+Materiales en español para un curso de ocho sesiones de dos horas. Cada versión construye un sistema didáctico de facturación y recorre datos, registros, colecciones, relaciones, consultas, colas, pilas, árboles, diccionarios y objetos.
 
-| Carpeta | Contenido | Para quién |
+| Curso | Plataforma | Entrada |
 | --- | --- | --- |
-| `guia_estudiante/` | Presentación, precondiciones, 8 laboratorios, proyecto integrador y glosario, con diagramas Mermaid e ilustraciones SVG | Estudiantes |
-| `guia_instructor/` | Enfoque, planificación, planes de sesión con soluciones, rúbricas, banco de preguntas y anexo técnico | Solo instructor |
-| `kit_estudiante/` | Datos CSV y módulos VBA que cada estudiante copia en `C:\CursoED` | Estudiantes |
-| `kit_instructor/` | Solución de la clase Factura, constructor de la base de solución y soluciones de la tarea 6 | Solo instructor |
+| Microsoft Access | Windows, Access de escritorio y VBA | [Curso Access](access/README.md) |
+| LibreOffice | Base con Firebird integrado, Calc, Writer y LibreOffice Basic | [Curso LibreOffice](libreoffice/README.md) |
 
-Empieza por `guia_instructor/00_inicio.md` y después por `guia_estudiante/00_inicio.md`.
+Cada curso contiene `guia_estudiante/`, `guia_instructor/`, `kit_estudiante/` y `kit_instructor/`. Distribuye a los estudiantes únicamente su guía y su kit: las carpetas del instructor contienen soluciones.
 
-## Cómo ver las guías
+Los cursos conservan el mismo recorrido y los mismos datos de ejemplo. La versión LibreOffice adapta el SQL, los controles de formulario, los informes y las macros a sus herramientas.
 
-Las guías son archivos Markdown. Los bloques `mermaid` se dibujan en la vista previa de Markdown de JetBrains y de VS Code (con una extensión de Mermaid), y también en GitHub. Para PDF o Word puedes usar pandoc con un filtro de Mermaid.
+## Codificación
 
-## Codificación de los archivos del kit
+Las guías y las imágenes SVG usan UTF-8. Los CSV, VBA y `LEEME.txt` del curso Access conservan Windows-1252 y CRLF. Todos los archivos del curso LibreOffice usan UTF-8 y LF. Las reglas del repositorio distinguen ambas carpetas.
 
-Los archivos `.csv`, `.bas`, `.cls` y `LEEME.txt` están en Windows-1252 con fin de línea CRLF. Así los importan Access y el editor de VBA en Windows sin perder acentos. No los vuelvas a guardar como UTF-8.
+## Construcción y verificación
 
-## Qué distribuir a los estudiantes
+La base `.accdb` o `.odb` se construye durante el curso; los formularios y los informes son ejercicios de laboratorio. Consulta la introducción del instructor de cada versión para construir la solución de referencia.
 
-- La carpeta `guia_estudiante/` completa, o exportada a PDF.
-- La carpeta `kit_estudiante/`.
-- Nunca `guia_instructor/` ni `kit_instructor/`: contienen las soluciones.
+El [diseño de la adaptación](docs/diseno-libreoffice.md) y su [plan](docs/plan-libreoffice.md) registran la organización y las decisiones técnicas.
+
+Consulta la [verificación de LibreOffice](docs/verificacion-libreoffice.md) para los comandos reproducibles, resultados nativos y alcance del ensayo de aula.
