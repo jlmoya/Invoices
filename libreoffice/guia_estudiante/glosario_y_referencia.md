@@ -65,22 +65,22 @@ En macOS las opciones generales están en LibreOffice → Preferencias. Los form
 
 ## Tipos y expresiones
 
-| Necesidad | Firebird / SQL | Basic |
+| Necesidad | HSQLDB / SQL | Basic |
 | --- | --- | --- |
 | Entero de 32 bits | `INTEGER` | `Long` |
 | Dinero exacto con 4 decimales | `DECIMAL(18,4)` | `Currency` |
 | Tasa del curso | `DECIMAL(9,4)` | `Double` en la API; `Currency` de cuatro decimales en el estado interno |
-| Texto | `VARCHAR(n)` | `String` |
+| Texto | `VARCHAR(n)`; texto extenso `LONGVARCHAR` | `String` |
 | Fecha | `DATE`, `CURRENT_DATE` | `Date`, `Date()` |
 | Fecha y hora | `TIMESTAMP`, `CURRENT_TIMESTAMP` | `Now()` |
 | Booleano | `BOOLEAN`, `TRUE`, `FALSE` | `Boolean`, `True`, `False` |
 | Ausencia de valor | `NULL`, `IS NULL`, `COALESCE` | `IsNull(valor)` o `rs.wasNull()` tras leer |
 | Concatenar texto | `||` | `&` |
-| Impuesto | `ROUND(subtotal * tasa, 2)` | `CalcularPorcentajeMoneda(subtotal, tasa)` |
+| Impuesto | `FLOOR(subtotal * tasa * 100 + 0.5) / 100` | `CalcularPorcentajeMoneda(subtotal, tasa)` |
 
-Firebird y Basic usan sintaxis SQL y de programación en inglés, aunque la interfaz esté en español. En SQL los decimales literales usan punto y las fechas se escriben `DATE '2026-09-01'`. En Calc, verifica idioma, separador de CSV y columnas de fecha antes de copiar los datos. Un parámetro SDBC enlaza un dato sin depender del separador decimal de la interfaz.
+HSQLDB y Basic usan sintaxis SQL y de programación en inglés, aunque la interfaz esté en español. En SQL los decimales literales usan punto y las fechas se escriben como texto ISO, `'2026-09-01'`: HSQLDB 1.8 no acepta la forma `DATE '2026-09-01'`. En Calc, verifica idioma, separador de CSV y columnas de fecha antes de copiar los datos. Un parámetro SDBC enlaza un dato sin depender del separador decimal de la interfaz.
 
-## SQL de Firebird en una mirada
+## SQL de HSQLDB en una mirada
 
 | Cláusula | Operación | Ejemplo |
 | --- | --- | --- |
@@ -91,12 +91,12 @@ Firebird y Basic usan sintaxis SQL y de programación en inglés, aunque la inte
 | `GROUP BY` | Agrupar | `GROUP BY "IdFactura"` |
 | `HAVING` | Filtrar grupos | `HAVING SUM("Importe") > 10000` |
 | `ORDER BY` | Ordenar | `ORDER BY "NumeroFactura" DESC` |
-| `FIRST n` | Limitar filas | `SELECT FIRST 1 … ORDER BY "IdCambio" DESC` |
+| `LIMIT n` | Limitar filas | `… ORDER BY "IdCambio" DESC LIMIT 1` |
 | `?` | Parámetro SDBC por posición | `WHERE "IdFactura" = ?`, luego `setInt(1, id)` |
 | `:FechaInicial` | Parámetro de una consulta guardada de Base | `WHERE "Fecha" >= :FechaInicial` |
-| `WITH RECURSIVE` | Recorrer jerarquías en SQL | Alternativa al árbol Basic de la sesión 6 |
+| `CALL IDENTITY()` | Leer la identidad que acaba de generar la conexión | Después de un `INSERT` sin `IdFactura` |
 
-Los identificadores mixtos se entrecomillan con `"…"`; los textos, con `'…'`. El analizador de Base permite que una consulta use otra consulta guardada. El modo «Ejecutar orden SQL directamente» envía el SQL a Firebird, que conoce tablas y vistas, no los nombres de consultas almacenadas en Base. No mezcles ambos modos sin revisar el origen de los datos.
+Los identificadores mixtos se entrecomillan con `"…"`; los textos, con `'…'`. El analizador de Base permite que una consulta use otra consulta guardada. El modo «Ejecutar orden SQL directamente» envía el SQL a HSQLDB, que conoce tablas y vistas, no los nombres de consultas almacenadas en Base. No mezcles ambos modos sin revisar el origen de los datos.
 
 ## Basic y SDBC en una mirada
 

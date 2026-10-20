@@ -84,7 +84,7 @@ La segunda columna conserva el ID; no añadas una tercera columna para el precio
 
 ### Parte C · Macros y eventos nativos (30 min)
 
-Carga `modEstructuras` para `ConexionBase()` según `00_inicio.md`; todavía no ejecutes la solución final ni el constructor del instructor. Crea en la biblioteca **Standard del documento** un módulo estándar `modInterfaz`. Este módulo se construye como ejercicio; no reemplaza las clases del kit.
+Carga `modConstantes` y `modEstructuras` para `ConexionBase()` según `00_inicio.md`; todavía no ejecutes la solución final ni el constructor del instructor. Crea en la biblioteca **Standard del documento** un módulo estándar `modInterfaz`. Este módulo se construye como ejercicio; no reemplaza las clases del kit.
 
 Primero añade estas funciones auxiliares. Un evento de un botón suele traer un control; «Después de actualizar» puede traer su modelo. Una columna de la cuadrícula tiene como padre la cuadrícula, y luego el formulario: por eso buscamos el formulario ascendiendo.
 
@@ -264,7 +264,7 @@ End Sub
 ### Parte F · Observa lo que todavía permite el sistema (10 min)
 
 1. En 1001, que está Pagada, cambia cantidad de la primera línea de 10 a 11 y guarda. El formulario ligado directamente a las tablas lo permite: las restricciones estructurales siguen cumplidas.
-2. Crea una factura nueva con estado Emitida, sin líneas y sin número. Firebird también la acepta con el esquema actual.
+2. Crea una factura nueva con estado Emitida, sin líneas y sin número. HSQLDB también la acepta con el esquema actual.
 3. Escribe las dos reglas que faltan y la diferencia entre integridad referencial y reglas de ciclo de vida. Las sesiones 7–8 construirán objetos que controlen esas operaciones.
 4. Restaura cantidad 10 y borra la factura de prueba. Confirma los totales originales, guarda y cierra Base; copia `Facturacion.odb` como `copias/Facturacion_lab05.odb`.
 

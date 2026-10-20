@@ -25,9 +25,9 @@ para cada factura: subtotal = suma de sus importes      (agregar por clave)
 para cada factura: unir cliente, impuesto y total       (unir)
 ```
 
-Las vistas del motor aparecen en Tablas; una consulta guardada de Base aparece en Consultas. Esta diferencia permite que los módulos Basic consulten `"qryTotalesFactura"` mediante SDBC sin el analizador de Base. `qryFacturasPorPeriodo` pertenece a Base porque requiere la entrada de parámetros. Antes de probarla, activa la sustitución de parámetros con nombre en la configuración avanzada del origen de datos y vuelve a abrir la base. Si la casilla no aparece, la guía carga anticipadamente `modConstantes` y `modEstructuras` en Standard y ejecuta `EjecutarConfiguracionParametros`; no ejecuta las operaciones de la sesión 6. El constructor de solución ya configura esta propiedad, por lo que ensayar solamente la base construida no comprueba la configuración manual del estudiante.
+Las vistas del motor aparecen en Tablas; una consulta guardada de Base aparece en Consultas. Esta diferencia permite que los módulos Basic consulten `"qryTotalesFactura"` mediante SDBC sin el analizador de Base. `qryFacturasPorPeriodo` pertenece a Base porque requiere la entrada de parámetros. Con HSQLDB incorporado no hace falta ninguna configuración: Base reconoce `:FechaInicial` y `:FechaFinal` siempre que la consulta no use SQL directo.
 
-No presentes el 16 % como tasa oficial. El curso redondea el impuesto sobre el subtotal a dos cifras, con empates alejados de cero, igual que Firebird ROUND. El kit implementa esa política en `RedondearMoneda`; el formato visual moneda no decide el redondeo.
+No presentes el 16 % como tasa oficial. El curso redondea el impuesto sobre el subtotal a dos cifras, con las mitades hacia arriba. `ROUND` de HSQLDB trabaja en coma flotante y falla en empates como 2.405; por eso las vistas usan `FLOOR(x * 100 + 0.5) / 100`, convertido a `DECIMAL`. Con 16 % y subtotales en centavos no hay empates, así que la diferencia aparece solo con otras tasas. El kit implementa la misma política en `RedondearMoneda`; el formato visual moneda no decide el redondeo.
 
 ## Preguntas para la discusión
 
@@ -48,9 +48,9 @@ No presentes el 16 % como tasa oficial. El curso redondea el impuesto sobre el s
 | Columna desconocida | Identificador sin comillas o nombre incorrecto | Revisar nombres sensibles a mayúsculas |
 | Total duplicado | Se unió el detalle antes de agregar | Calcular subtotal antes de unir al encabezado |
 | Tasa 16 falla o parece 1600 % | Confusión entre porcentaje y fracción | Almacenar 0.16; mostrar porcentaje como formato |
-| No pide fechas o Firebird rechaza ':' | SQL directo activado en consulta parametrizada | Desactivarlo en qryFacturasPorPeriodo |
-| Columna desconocida FECHAINICIAL/FECHAFINAL al ejecutar el periodo | El controlador no sustituyó los parámetros con nombre | Activar `Reemplazar parámetros con nombre por «?»` en Editar → Base de datos → Configuración avanzada → Configuración especial; o ejecutar EjecutarConfiguracionParametros con modConstantes y modEstructuras cargados. Guardar, cerrar y reabrir Base para renovar las conexiones |
-| Periodo vacío | Formato de entrada de fechas o límites incorrectos | Probar literales DATE ISO y comprobar la configuración regional |
+| No pide fechas o HSQLDB rechaza ':' | SQL directo activado en consulta parametrizada | Desactivarlo en qryFacturasPorPeriodo |
+| Periodo vacío | Formato de entrada de fechas o límites incorrectos | Probar las fechas como texto ISO, `'2026-09-01'` (HSQLDB 1.8 no acepta `DATE '…'`), y comprobar la configuración regional |
+| Impuesto con un centavo de diferencia | Se usó `ROUND` en la vista | Usar `CAST(FLOOR(x * 100 + 0.5) / 100 AS DECIMAL(18,4))` |
 | Reporte posterior vacío | Parámetros sin registro | Restablecer Id=1 antes de la sesión 5 |
 
 ## Solución de la tarea 4
@@ -95,10 +95,10 @@ CREATE VIEW "qryTotalesConVacias" AS
 SELECT f."IdFactura", f."NumeroFactura", f."Fecha", f."Estado", c."RazonSocial",
        CAST(COALESCE(s."Subtotal", 0) AS DECIMAL(18,4)) AS "Subtotal",
        f."TasaImpuesto",
-       CAST(ROUND(COALESCE(s."Subtotal", 0) * f."TasaImpuesto", 2)
+       CAST(FLOOR(COALESCE(s."Subtotal", 0) * f."TasaImpuesto" * 100 + 0.5) / 100
             AS DECIMAL(18,4)) AS "Impuesto",
-       CAST(COALESCE(s."Subtotal", 0) +
-            ROUND(COALESCE(s."Subtotal", 0) * f."TasaImpuesto", 2)
+       CAST(COALESCE(s."Subtotal", 0) AS DECIMAL(18,4)) +
+       CAST(FLOOR(COALESCE(s."Subtotal", 0) * f."TasaImpuesto" * 100 + 0.5) / 100
             AS DECIMAL(18,4)) AS "Total"
 FROM "tblFacturas" f
 JOIN "tblClientes" c ON c."IdCliente" = f."IdCliente"
@@ -114,4 +114,4 @@ Comprueba el reto con un borrador temporal sin líneas: solo la nueva vista debe
 3. Habría que editar la consulta y las facturas antiguas cambiarían indebidamente.
 4. La unión interna con subtotales excluye encabezados sin líneas.
 
-Referencia: [Configuración especial y sustitución de parámetros con nombre](https://help.libreoffice.org/latest/es/text/sdatabase/dabaadvpropdat.html).
+Referencia: [Parámetros y SQL directo en Base](https://help.libreoffice.org/latest/es/text/sdatabase/02010100.html) y [funciones de HSQLDB 1.8](https://hsqldb.org/doc/1.8/guide/ch09.html).

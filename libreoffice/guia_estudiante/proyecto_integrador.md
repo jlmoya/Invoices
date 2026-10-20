@@ -13,7 +13,7 @@ El proyecto integra todo el curso: extiendes el sistema de facturación con una 
 ## Requisitos comunes
 
 - [ ] Modelo entidad-relación en Mermaid de las tablas nuevas, con claves y cardinalidades.
-- [ ] Tablas y relaciones creadas en Base/Firebird, con integridad referencial y reglas de validación.
+- [ ] Tablas y relaciones creadas en Base con HSQLDB, con integridad referencial y reglas de validación.
 - [ ] Al menos dos consultas nuevas, una de ellas con agregación.
 - [ ] Un formulario o un informe nuevo.
 - [ ] Tarjetas CRC, diagrama de clases y diagrama de estados de la parte nueva.

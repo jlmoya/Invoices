@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Ejecuta las macros del kit en LibreOffice y Firebird con un perfil temporal."""
+"""Ejecuta las macros del kit en LibreOffice con HSQLDB incorporado y un perfil temporal."""
 import argparse
 from pathlib import Path
 import re
@@ -43,17 +43,30 @@ Sub Ejecutar
     Open "{salida}" For Output As #n
     Print #n, "INICIO"
     d = StarDesktop.loadComponentFromURL("private:factory/sdatabase", "_blank", 0, Array())
-    d.DataSource.URL = "sdbc:embedded:firebird"
+    d.DataSource.URL = "sdbc:embedded:hsqldb"
     d.storeAsURL(ConvertToURL("{odb}"), Array())
-    ConfigurarParametrosBase d
     c = d.DataSource.getIsolatedConnection("", "")
     Print #n, ConstruirSolucion(c, d, False)
     If Not CompilarGuiaFormulario() Then Err.Raise 5014
     Print #n, "CÓDIGO DE LA GUÍA DE FORMULARIOS: compilado"
-    r = c.createStatement().executeQuery("SELECT RDB$GET_CONTEXT('SYSTEM','ENGINE_VERSION') FROM RDB$DATABASE")
+    Print #n, "MOTOR " & c.getMetaData().getDatabaseProductName() & " " & c.getMetaData().getDatabaseProductVersion()
+    ' Tras los Id explícitos de la carga, HSQLDB continúa en el máximo más uno.
+    c.setAutoCommit(False)
+    s = c.createStatement()
+    s.executeUpdate("INSERT INTO ""tblClientes"" (""DocumentoFiscal"",""RazonSocial"") VALUES ('PRUEBA-ID','Prueba')")
+    r = s.executeQuery("CALL IDENTITY()")
     r.next()
-    Print #n, "FIREBIRD " & r.getString(1)
+    If r.getInt(1) <> 9 Then Err.Raise 5015
     r.close()
+    s.executeUpdate("INSERT INTO ""tblProductos"" (""Codigo"",""Descripcion"",""IdCategoria"",""Precio"") VALUES ('PRUEBA-ID','Prueba',1,1)")
+    r = s.executeQuery("CALL IDENTITY()")
+    r.next()
+    If r.getInt(1) <> 16 Then Err.Raise 5016
+    r.close()
+    c.rollback()
+    c.setAutoCommit(True)
+    s.close()
+    Print #n, "IDENTIDADES: la siguiente alta recibe 9 en clientes y 16 en productos"
     Print #n, ProbarFactura(c, False)
     Print #n, ProbarReglas(c, False)
     Print #n, ProbarRepositorio(c, False)
@@ -176,7 +189,7 @@ End Sub
     print(f"Perfil, base y resultados: {trabajo}", flush=True)
     proceso = subprocess.Popen(base + ["macro:///Standard.Verificar.Ejecutar()"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     try:
-        _, errores = proceso.communicate(timeout=45)
+        _, errores = proceso.communicate(timeout=120)
     except subprocess.TimeoutExpired:
         proceso.terminate()
         proceso.communicate(timeout=10)

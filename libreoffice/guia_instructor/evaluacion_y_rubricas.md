@@ -30,7 +30,7 @@ La misma que ve el estudiante en `guia_estudiante/proyecto_integrador.md`: model
 | --- | --- | --- |
 | 1 | ¿Por qué el total de una factura no se guarda? | Es derivado: guardarlo permite inconsistencias |
 | 1 | ¿Qué es un registro? | Los valores de una sola ocurrencia de una entidad |
-| 2 | ¿Qué tipo usar para dinero y por qué? | `DECIMAL(18,4)` en Firebird y `Currency` en Basic: cuatro decimales exactos; `Double` usa representación binaria |
+| 2 | ¿Qué tipo usar para dinero y por qué? | `DECIMAL(18,4)` en HSQLDB y `Currency` en Basic: cuatro decimales exactos; `Double` usa representación binaria |
 | 2 | ¿Cuántas comparaciones hace la búsqueda binaria en 1 000 000 de registros? | Unas 20 |
 | 3 | ¿Qué prohíbe la integridad referencial? | Claves foráneas que apuntan a registros inexistentes |
 | 3 | ¿Qué es una dependencia funcional? | Que conocer un campo basta para saber otro, como `DocCliente → CiudadCliente` |
@@ -45,7 +45,7 @@ La misma que ve el estudiante en `guia_estudiante/proyecto_integrador.md`: model
 | 5 | ¿Qué guarda una lista con campo ligado 1 y SQL `SELECT "RazonSocial", "IdCliente" …`? | El IdCliente de la segunda columna: los campos ligados de la lista se numeran desde 0 |
 | 5 | ¿Qué recorrido hace un informe agrupado? | Encabezado del grupo, detalle y pie |
 | 6 | ¿Qué distingue a una cola de una pila? | El orden de salida: FIFO frente a LIFO |
-| 6 | ¿Por qué recorremos el árbol con Basic? | Para observar recursión y pila de llamadas; Firebird también permite `WITH RECURSIVE` |
+| 6 | ¿Por qué recorremos el árbol con Basic? | HSQLDB 1.8 no admite consultas recursivas; además permite observar la recursión y la pila de llamadas |
 | 7 | ¿Qué es una tarjeta CRC? | Clase, responsabilidades y colaboradores |
 | 7 | ¿Qué heurística asigna el total a la factura? | Experto en información |
 | 8 | ¿Por qué el repositorio es una clase aparte? | Alta cohesión: la factura no sabe de almacenamiento |

@@ -79,12 +79,12 @@ No omitas la parte F del laboratorio 5 en ninguna variante: es el puente hacia l
 
 ## Preparación del laboratorio
 
-- [ ] LibreOffice con Base, Firebird integrado, Calc, Writer y ScriptForge en cada equipo. Registra la versión y el sistema operativo; prueba con la cuenta de un estudiante.
+- [ ] LibreOffice con Base, Calc, Writer y ScriptForge en cada equipo, y un entorno de ejecución de Java seleccionado en Herramientas → Opciones → LibreOffice → Avanzadas. HSQLDB incorporado no funciona sin Java. Registra la versión y el sistema operativo; prueba con la cuenta de un estudiante que el asistente ofrezca «HSQLDB incorporado».
 - [ ] Carpeta personal local `CursoED`, fuera de sincronización, con `datos/` y `basic/` del kit del estudiante. Windows, Linux y macOS usan rutas propias; no exijas `C:\CursoED` a todos.
 - [ ] Carpeta del curso configurada como ubicación de confianza para macros. Si TI administra esta opción, solicita únicamente esa carpeta.
-- [ ] Generador de informes probado; instala/configura un JRE compatible cuando lo requiera. Verifica arquitectura y permisos, no solo que aparezca «Java instalado».
+- [ ] Generador de informes probado con el mismo Java. Verifica arquitectura y permisos, no solo que aparezca «Java instalado».
 - [ ] Ensayo completo del recorrido manual de los laboratorios, además de construir la solución y ejecutar las pruebas.
-- [ ] Parámetros nombrados habilitados: carga `modConstantes` y `modEstructuras`, ejecuta `EjecutarConfiguracionParametros` y guarda/cierra/reabre el `.odb` antes de abrir `qryFacturasPorPeriodo`. Comprueba que la interfaz solicita los valores y la consulta devuelve el periodo esperado. La opción es Editar → Base de datos → Configuración avanzada → Configuración especial → Reemplazar parámetros con nombre por «?».
+- [ ] `qryFacturasPorPeriodo` probada en la interfaz: debe pedir `FechaInicial` y `FechaFinal` y devolver el periodo esperado. Con HSQLDB incorporado no hace falta ninguna configuración especial.
 - [ ] Diccionario ScriptForge probado con una `Sub` sin argumentos que llame a `UnidadesPorProducto` sobre los datos de solución; debe mostrar 14 códigos y PAP-001 = 19.
 - [ ] Hojas o tarjetas para la sesión 7: cinco por equipo, más una para el repositorio.
 - [ ] Copias cerradas de `.odb` al final de cada sesión y restauración ensayada.
@@ -92,8 +92,8 @@ No omitas la parte F del laboratorio 5 en ninguna variante: es el puente hacia l
 
 ### Construir la base de solución
 
-1. Crea una base nueva Firebird integrado y guarda `CursoED/Facturacion_Solucion.odb`. Esta es una base del instructor; el alumnado construye la propia paso a paso.
-2. En Standard del documento crea y pega `modConstantes` y `modEstructuras` del kit del estudiante y `modConstruirSolucion` del kit del instructor (archivos `.bas` UTF-8). Ejecuta `EjecutarConstructor` (llama a `ConstruirSolucion`). Debe usarse sobre una base nueva y vacía: el constructor rechaza una base con tablas existentes.
+1. Crea una base nueva con «HSQLDB incorporado» y guarda `CursoED/Facturacion_Solucion.odb`. Esta es una base del instructor; el alumnado construye la propia paso a paso.
+2. En Standard del documento crea y pega `modConstantes` y `modEstructuras` del kit del estudiante y `modConstruirSolucion` del kit del instructor (archivos `.bas` UTF-8). Ejecuta `EjecutarConstructor` (llama a `ConstruirSolucion`). Debe usarse sobre una base nueva y vacía: el constructor rechaza una base con tablas existentes. HSQLDB confirma cada `CREATE` al instante; si el constructor falla, crea otro `.odb` vacío antes de repetir.
 3. Resultado: siete tablas con restricciones, seis relaciones, datos de ejemplo, diez vistas del motor y una consulta parametrizada guardada de Base. El historial empieza vacío; las categorías incluyen la relación reflexiva. Es el estado previo a cobrar en el laboratorio 6.
 4. Carga los módulos de sesión 8; crea **`clsFactura`** con la solución `kit_instructor/basic/clsFactura.bas`. Ejecuta `EjecutarFactura`, `EjecutarPruebas` y `EjecutarRepositorio` (llaman a las funciones `ProbarFactura`, `ProbarReglas` y `ProbarRepositorio`). Comprueba total 10610.17 en factura 1003.
 5. Ejecuta las operaciones de cola, pila y árbol sobre una copia: atender 1002 modifica el estado; dos cambios y dos deshacer dejan PAP-001 en 119.00.
@@ -107,9 +107,11 @@ Consulta [la introducción del estudiante](../guia_estudiante/00_inicio.md) para
 | Situación | Qué pasa | Qué hacer |
 | --- | --- | --- |
 | Importación CSV en Calc | El idioma afecta fechas y decimales | UTF-8, separador coma, comillas dobles; verificar idioma y fechas ISO antes de copiar |
-| Dinero en SQL | Firebird distingue tipos exactos de coma flotante | `DECIMAL(18,4)`; Basic `Currency`; tasa `DECIMAL(9,4)` |
-| Comillas SQL | Firebird convierte nombres no entrecomillados a mayúsculas | Usar siempre `"tblFacturas"`, `"IdFactura"` y texto `'Emitida'` |
-| Parámetros `:FechaInicial`, `:FechaFinal` | Firebird recibe `?` mediante la sustitución de Base | Habilitar `ParameterNameSubstitution` antes de abrir la conexión; si ya estaba abierta, cerrar y reabrir |
+| Dinero en SQL | HSQLDB distingue tipos exactos de coma flotante; `ROUND` y `FLOOR` trabajan en coma flotante | `DECIMAL(18,4)`; Basic `Currency`; tasa `DECIMAL(9,4)`; impuesto con `CAST(FLOOR(x * 100 + 0.5) / 100 AS DECIMAL(18,4))` |
+| Comillas SQL | HSQLDB convierte nombres no entrecomillados a mayúsculas | Usar siempre `"tblFacturas"`, `"IdFactura"` y texto `'Emitida'` |
+| Parámetros `:FechaInicial`, `:FechaFinal` | Base los reconoce en una consulta guardada sin SQL directo | Desactivar «Ejecutar orden SQL directamente» en esa consulta |
+| Restricciones en HSQLDB 1.8 | `CHECK`, `UNIQUE` y `FOREIGN KEY` solo se aceptan como restricciones de tabla; `LIKE` dentro de un `CHECK` rechaza todo valor | Escribir las restricciones después de los campos; no validar el formato del correo en el motor |
+| Identidades | Sin `START WITH 1` empiezan en 0; tras IDs explícitos continúan en el máximo más uno | Declarar siempre `(START WITH 1)`; no hace falta `RESTART` después de importar |
 | Consulta sobre otra consulta | El modo SQL directo llega al motor sin resolver consultas de Base | Usar vistas del motor o el analizador de Base según el laboratorio |
 | Valores SQL desde Basic | `CStr` depende del separador regional | Sentencias preparadas SDBC y parámetros; dinero exacto con conversión decimal del kit |
 | Macros desde Writer | `ThisComponent` puede ser el documento de formulario | `ConexionBase()` usa el documento Base y devuelve una conexión aislada para transacciones; guardar la fila antes y recargar después |

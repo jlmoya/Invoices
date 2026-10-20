@@ -5,7 +5,7 @@ Materiales en español para un curso de ocho sesiones de dos horas. Cada versió
 | Curso | Plataforma | Entrada |
 | --- | --- | --- |
 | Microsoft Access | Windows, Access de escritorio y VBA | [Curso Access](access/README.md) |
-| LibreOffice | Base con Firebird integrado, Calc, Writer y LibreOffice Basic | [Curso LibreOffice](libreoffice/README.md) |
+| LibreOffice | Base con HSQLDB incorporado, Calc, Writer y LibreOffice Basic | [Curso LibreOffice](libreoffice/README.md) |
 
 Cada curso contiene `guia_estudiante/`, `guia_instructor/`, `kit_estudiante/` y `kit_instructor/`. Distribuye a los estudiantes únicamente su guía y su kit: las carpetas del instructor contienen soluciones.
 

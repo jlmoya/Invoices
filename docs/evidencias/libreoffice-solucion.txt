@@ -2,7 +2,8 @@ Perfil y base temporales aislados; el script imprime su ruta al ejecutarse.
 INICIO
 Base construida: 7 tablas, 6 relaciones, 10 vistas y 1 consulta con parámetros.
 CÓDIGO DE LA GUÍA DE FORMULARIOS: compilado
-FIREBIRD 3.0.13
+MOTOR HSQL Database Engine 1.8.0
+IDENTIDADES: la siguiente alta recibe 9 en clientes y 16 en productos
 Subtotal: 9146.70
 Impuesto: 1463.47
 Total: 10610.17
@@ -87,7 +88,7 @@ PILA: dos cambios y dos deshacer correctos
 
 COLA: se atendió primero 1002
 DATOS Y TOTALES CORRECTOS
-SQL DE BASE: SELECT "NumeroFactura", "Fecha", "RazonSocial", "Total" FROM "qryTotalesFactura" WHERE "Fecha" BETWEEN ? AND ? ORDER BY "Fecha"
+SQL DE BASE: SELECT "NumeroFactura", "Fecha", "RazonSocial", "Total" FROM "qryTotalesFactura" WHERE "Fecha" BETWEEN :FechaInicial AND :FechaFinal ORDER BY "Fecha"
 CONSULTA PARAMETRIZADA: siete facturas en septiembre
 REAPERTURA: siete facturas conservadas
 MACROS DEL DOCUMENTO: Factura 1003 (Emitida)

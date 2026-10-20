@@ -6,7 +6,8 @@ Introducción a las Estructuras de Datos — LibreOffice Base
 3. Conserva UTF-8 y LF. Los CSV se abren en Calc con separador coma,
    delimitador de texto comillas dobles y configuración Inglés (EE. UU.)
    para interpretar el punto decimal. Conserva identificadores fiscales como texto.
-4. Usa Base con Firebird integrado; no HSQLDB.
+4. Activa Java en Herramientas > Opciones > LibreOffice > Avanzadas y crea
+   la base con "HSQLDB incorporado", la opción predeterminada del asistente.
 
 datos/
   clientes.csv, productos.csv                  Laboratorio 2
@@ -15,8 +16,7 @@ datos/
 
 basic/
   modRegistros.bas                             Laboratorio 2
-  modConstantes.bas, modEstructuras.bas         Laboratorio 4 (configuración
-                                              opcional), 5 y 6
+  modConstantes.bas, modEstructuras.bas         Laboratorios 5 y 6
   modConstantes.bas, clsLineaFactura.bas,
   clsFactura_plantilla.bas,
   clsRepositorioFacturas.bas,

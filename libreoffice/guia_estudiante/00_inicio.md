@@ -52,7 +52,7 @@ Es un sistema didáctico: no cumple los requisitos de facturación electrónica 
 
 ## Precondiciones
 
-Necesitas una computadora con LibreOffice de escritorio instalado antes de la sesión 1. Base almacena las tablas en Firebird integrado; Calc ayuda a importar los CSV y Writer es el editor de formularios e informes. Si algo falla, avisa a tu instructor antes de la sesión.
+Necesitas una computadora con LibreOffice de escritorio instalado antes de la sesión 1. Base almacena las tablas en HSQLDB incorporado, un motor que funciona con Java; Calc ayuda a importar los CSV y Writer es el editor de formularios e informes. Si algo falla, avisa a tu instructor antes de la sesión.
 
 ### Equipo y software
 
@@ -60,8 +60,8 @@ Necesitas una computadora con LibreOffice de escritorio instalado antes de la se
 | --- | --- | --- |
 | Sistema operativo | Windows, Linux o macOS compatible con tu instalación de LibreOffice | Información del sistema |
 | LibreOffice de escritorio | Instalación con Base, Calc, Writer y las bibliotecas de macros ScriptForge; usa la versión comprobada por el instructor | Ayuda → Acerca de LibreOffice; abre Base |
-| Firebird integrado | El asistente de base nueva permite elegir Firebird integrado | Archivo → Nuevo → Base de datos |
-| Java para informes | El generador de informes puede necesitar un JRE de la misma arquitectura que LibreOffice | Herramientas → Opciones → LibreOffice → Avanzado; en macOS, LibreOffice → Preferencias |
+| Java | HSQLDB incorporado, los asistentes y el generador de informes necesitan un entorno de ejecución de Java de la misma arquitectura que LibreOffice | Herramientas → Opciones → LibreOffice → Avanzadas → Opciones de Java; en macOS, LibreOffice → Preferencias |
+| HSQLDB incorporado | El asistente de base nueva lo ofrece como base de datos incorporada predeterminada | Archivo → Nuevo → Base de datos |
 | Espacio local | 500 MB libres; carpeta personal `CursoED` con permisos de escritura | Administrador de archivos |
 | Archivos del curso | `datos/` con seis CSV y `basic/` con los módulos UTF-8 | Paquete `kit_estudiante` |
 | Navegador opcional | Para diagramas en [mermaid.live](https://mermaid.live); también puedes usar papel | Abre la página y prueba un diagrama |
@@ -82,8 +82,9 @@ No necesitas experiencia previa con bases de datos ni con Base.
 - [ ] Crea `CursoED` dentro de tu carpeta personal y en disco local. Ejemplos: Windows `C:\Users\tu_usuario\CursoED`, Linux `/home/tu_usuario/CursoED`, macOS `/Users/tu_usuario/CursoED`.
 - [ ] Copia dentro las carpetas `datos` y `basic` del kit del estudiante.
 - [ ] Activa la visualización de extensiones de archivo en tu administrador de archivos.
-- [ ] Abre Base y comprueba la opción Firebird integrado.
-- [ ] Comprueba con el instructor el generador de informes y Java antes de necesitarlo en la sesión 5.
+- [ ] En Herramientas → Opciones → LibreOffice → Avanzadas, comprueba que esté marcada «Utilizar un entorno de ejecución de Java» y que haya un entorno seleccionado.
+- [ ] Abre Archivo → Nuevo → Base de datos y comprueba que la base de datos incorporada sea HSQLDB incorporado; después cancela el asistente.
+- [ ] Comprueba con el instructor el generador de informes antes de necesitarlo en la sesión 5.
 
 La ubicación de confianza para macros se configura en el laboratorio 1. Solo agrega la carpeta local del curso y usa sus archivos de código conocidos.
 
@@ -123,8 +124,6 @@ flowchart TB
 
 Trabajarás siempre sobre una sola base de datos, `CursoED/Facturacion.odb`, que crece sesión a sesión. Al terminar cada sesión haz una copia de seguridad.
 
-Antes de usar la consulta parametrizada de la sesión 4, habilita la sustitución de parámetros nombrados. Para hacerlo con macro, carga `modConstantes` y `modEstructuras` y ejecuta `EjecutarConfiguracionParametros`. El helper guarda `ParameterNameSubstitution = True` para que Base convierta parámetros como `:FechaInicial` a `?`. Guarda y cierra la base y todas sus ventanas, y vuelve a abrirla: una conexión que ya estaba abierta conserva la configuración anterior. También puedes activar «Reemplazar parámetros con nombre por “?”» en Editar → Base de datos → Configuración avanzada → Configuración especial, como indica ese laboratorio.
-
 ### Estructura de cada laboratorio
 
 1. Objetivos: lo que podrás hacer al terminar.
@@ -153,7 +152,7 @@ Antes de usar la consulta parametrizada de la sesión 4, habilita la sustitució
 | Módulo estándar | `mod` | `modEstructuras` |
 | Módulo de clase | `cls` | `clsFactura` |
 
-Los nombres de objetos y campos van sin espacios, sin acentos y sin ñ, con mayúscula al inicio de cada palabra: `IdCliente`, `PrecioUnitario`. En Firebird, escribe los nombres de tablas y campos entre comillas dobles para conservar sus mayúsculas: `"tblFacturas"`, `"IdCliente"`. Las cadenas de texto SQL llevan comillas simples: `'Borrador'`.
+Los nombres de objetos y campos van sin espacios, sin acentos y sin ñ, con mayúscula al inicio de cada palabra: `IdCliente`, `PrecioUnitario`. En HSQLDB, escribe los nombres de tablas y campos entre comillas dobles para conservar sus mayúsculas: `"tblFacturas"`, `"IdCliente"`. Las cadenas de texto SQL llevan comillas simples: `'Borrador'`.
 
 ### Copias de seguridad
 
@@ -161,7 +160,7 @@ Los nombres de objetos y campos van sin espacios, sin acentos y sin ñ, con may�
 - Copia el archivo cerrado a `Facturacion_sesion01.odb`, `Facturacion_sesion02.odb`, etc. Conserva una copia fuera de la carpeta de trabajo.
 - Si algo se daña, abre la última copia cerrada y repite solo los pasos de la sesión.
 
-El `.odb` incluye el contenedor de Firebird integrado, formularios, consultas y macros. Copiarlo mientras está abierto puede producir una copia incompleta.
+El `.odb` incluye la base HSQLDB incorporada, formularios, consultas y macros. Los datos se escriben en el `.odb` al guardar; copiarlo mientras está abierto puede producir una copia incompleta.
 
 Las tareas son individuales. En la sesión 7 trabajarás en equipos de tres o cuatro personas.
 
@@ -195,7 +194,7 @@ Entrega tu `Facturacion.odb` con tu apellido en el nombre (por ejemplo `Facturac
 | 1 · Del papel a los datos | Ninguno: la factura modelo está en la guía |
 | 2 · Tipos, registros y colecciones | `datos/clientes.csv`, `datos/productos.csv`, `basic/modRegistros.bas` |
 | 3 · Normalización y relaciones | `datos/factura_plana.csv`, `datos/categorias.csv`, `datos/facturas.csv`, `datos/detalle_factura.csv` |
-| 4 · Consultas | Alternativa con macro: `basic/modConstantes.bas`, `basic/modEstructuras.bas`, para configurar parámetros nombrados |
+| 4 · Consultas | Ninguno: las vistas y la consulta con parámetros se escriben en clase |
 | 5 · Maestro-detalle e informe | `basic/modConstantes.bas`, `basic/modEstructuras.bas`; escribes `modInterfaz` en clase |
 | 6 · Cola, pila, árbol y diccionario | `basic/modConstantes.bas`, `basic/modEstructuras.bas` |
 | 7 · Pensar en objetos | Ninguno: papel, tarjetas y mermaid.live |

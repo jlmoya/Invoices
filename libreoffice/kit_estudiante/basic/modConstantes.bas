@@ -49,7 +49,7 @@ Public Function MonedaDesdeSQL(ByVal texto As String) As Currency
     MonedaDesdeSQL = acumulado*CCur(signo)
 End Function
 
-' HALF_UP para importes no negativos, igual a ROUND de Firebird.
+' HALF_UP para importes no negativos, igual a FLOOR(x * 100 + 0.5) / 100 en las vistas.
 Public Function RedondearMoneda(ByVal valor As Currency) As Currency
     If valor<0 Then Err.Raise 4101, "Curso", MensajeError(4101)
     RedondearMoneda = RedondearDigitos(Replace(DecimalSQL(valor),".",""),4)
@@ -120,7 +120,7 @@ Public Function MensajeError(ByVal codigo As Long) As String
     Case 4101: MensajeError = "El importe debe ser no negativo."
     Case 4102: MensajeError = "Decimal SQL inválido: se admiten hasta cuatro decimales."
     Case 4201: MensajeError = "El tamaño del catálogo debe ser positivo."
-    Case 3011: MensajeError = "No se encontró el generador IDENTITY de tblFacturas."
+    Case 3011: MensajeError = "HSQLDB no devolvió la identidad de la factura nueva."
     Case 3010: MensajeError = "El protocolo de reconstrucción se usó fuera de una instancia nueva."
     Case 4001: MensajeError = "El porcentaje debe estar entre 0 y 1."
     Case 6001: MensajeError = "El precio no puede ser negativo."

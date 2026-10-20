@@ -15,47 +15,11 @@ Public Function ConexionBase(Optional ByVal conexion As Variant) As Object
         End If
     End If
     If Not mTieneConexion Then
-        ConfigurarParametrosBase ThisDatabaseDocument
         mConexionMacro = ThisDatabaseDocument.DataSource.getIsolatedConnection("", "")
         mTieneConexion = True
     End If
     ConexionBase = mConexionMacro
 End Function
-
-' Configurar antes de abrir la primera conexión. Base sustituye :Nombre por ?
-' para el driver Firebird. Se conservan todos los demás valores de DataSource.Info.
-Public Sub ConfigurarParametrosBase(ByVal documento As Object)
-    Dim info As Variant, propiedad As Variant, salida() As Variant
-    Dim cantidad As Long, i As Long, encontrada As Boolean
-    info = documento.DataSource.Info
-    For Each propiedad In info
-        cantidad = cantidad+1
-    Next propiedad
-    ReDim salida(0 To cantidad)
-    For Each propiedad In info
-        If propiedad.Name="ParameterNameSubstitution" Then
-            propiedad.Value = True
-            encontrada = True
-        End If
-        salida(i) = propiedad
-        i = i+1
-    Next propiedad
-    If encontrada Then
-        ReDim Preserve salida(0 To cantidad-1)
-    Else
-        propiedad = CreateUnoStruct("com.sun.star.beans.PropertyValue")
-        propiedad.Name = "ParameterNameSubstitution"
-        propiedad.Value = True
-        salida(cantidad) = propiedad
-    End If
-    documento.DataSource.Info = salida()
-End Sub
-
-Public Sub EjecutarConfiguracionParametros()
-    ConfigurarParametrosBase ThisDatabaseDocument
-    ThisDatabaseDocument.store()
-    MsgBox "Configuración guardada. Cierre y vuelva a abrir la base antes de ejecutar sus consultas.",64,"Configuración de consultas"
-End Sub
 
 ' Cierra solamente la conexión aislada abierta por este módulo.
 Public Sub CerrarConexionBase()
@@ -89,7 +53,8 @@ Public Function AtenderSiguienteCobro(Optional ByVal conexion As Variant) As Lon
     On Error GoTo Falla
     cn.setAutoCommit(False)
     q = cn.createStatement()
-    rs = q.executeQuery("SELECT FIRST 1 ""IdFactura"",""NumeroFactura"" FROM ""tblFacturas"" WHERE ""Estado""='Emitida' ORDER BY ""NumeroFactura"" WITH LOCK")
+    ' HSQLDB 1.8 no bloquea filas; el UPDATE solo cambia la factura si sigue emitida.
+    rs = q.executeQuery("SELECT ""IdFactura"",""NumeroFactura"" FROM ""tblFacturas"" WHERE ""Estado""='Emitida' ORDER BY ""NumeroFactura"" LIMIT 1")
     If rs.next() Then
         id = rs.getInt(1): numero = rs.getInt(2)
     End If
@@ -143,7 +108,7 @@ Public Function DeshacerUltimoCambio(ByVal idProducto As Long, _
     If Not cn.getAutoCommit() Then Err.Raise 3002, "Curso", MensajeError(3002)
     On Error GoTo Falla
     cn.setAutoCommit(False)
-    q = cn.prepareStatement("SELECT FIRST 1 ""IdCambio"",""PrecioAnterior"" FROM ""tblHistorialPrecios"" WHERE ""IdProducto""=? ORDER BY ""IdCambio"" DESC WITH LOCK")
+    q = cn.prepareStatement("SELECT ""IdCambio"",""PrecioAnterior"" FROM ""tblHistorialPrecios"" WHERE ""IdProducto""=? ORDER BY ""IdCambio"" DESC LIMIT 1")
     q.setInt(1,idProducto)
     rs = q.executeQuery()
     If rs.next() Then

@@ -1,38 +1,38 @@
 # Anexo técnico
 
-Referencia de la base Firebird integrada que construye `modConstruirSolucion`: tablas, relaciones, consultas, módulos y errores. Los identificadores de tablas y campos se escriben entre comillas dobles; el archivo `.odb` contiene el motor integrado y los objetos de Base.
+Referencia de la base con HSQLDB incorporado que construye `modConstruirSolucion`: tablas, relaciones, consultas, módulos y errores. Los identificadores de tablas y campos se escriben entre comillas dobles; el archivo `.odb` contiene la base incorporada y los objetos de Base. El motor es el HSQLDB 1.8 que trae LibreOffice y necesita Java.
 
 ## Diccionario de datos
 
 | Tabla | Campo | Tipo | Restricciones |
 | --- | --- | --- | --- |
-| tblClientes | IdCliente | INTEGER IDENTITY | Clave principal |
+| tblClientes | IdCliente | INTEGER IDENTITY (START WITH 1) | Clave principal |
 | tblClientes | DocumentoFiscal | VARCHAR(20) | Requerido, índice único |
 | tblClientes | RazonSocial | VARCHAR(100) | Requerido |
 | tblClientes | Direccion, Ciudad, Telefono | VARCHAR(150), VARCHAR(60), VARCHAR(20) | |
-| tblClientes | Correo | VARCHAR(100) | CHECK con `LIKE '%@%.%' OR … IS NULL` (validación didáctica) |
+| tblClientes | Correo | VARCHAR(100) | Sin CHECK: HSQLDB 1.8 no puede validar el formato en el motor (ver límites) |
 | tblClientes | FechaAlta | DATE | Predeterminado `CURRENT_DATE` |
 | tblCategorias | IdCategoria | INTEGER | Clave principal |
 | tblCategorias | Nombre | VARCHAR(50) | Requerido, índice único |
 | tblCategorias | IdCategoriaPadre | INTEGER | Vacío en la raíz; relación reflexiva |
-| tblProductos | IdProducto | INTEGER IDENTITY | Clave principal |
+| tblProductos | IdProducto | INTEGER IDENTITY (START WITH 1) | Clave principal |
 | tblProductos | Codigo | VARCHAR(15) | Requerido, índice único |
 | tblProductos | Descripcion | VARCHAR(100) | Requerido |
 | tblProductos | IdCategoria | INTEGER | Requerido |
 | tblProductos | Precio | DECIMAL(18,4) | Requerido, CHECK >= 0 |
 | tblProductos | Existencia | INTEGER | Predeterminado 0, CHECK >= 0 |
 | tblProductos | Activo | BOOLEAN | Predeterminado TRUE |
-| tblFacturas | IdFactura | INTEGER IDENTITY | Clave principal |
+| tblFacturas | IdFactura | INTEGER IDENTITY (START WITH 1) | Clave principal |
 | tblFacturas | NumeroFactura | INTEGER | Índice único; vacío en borrador |
 | tblFacturas | Fecha | DATE | Requerido, predeterminado `CURRENT_DATE` |
 | tblFacturas | IdCliente | INTEGER | Requerido |
 | tblFacturas | TasaImpuesto | DECIMAL(9,4) | Formato porcentaje, CHECK entre 0 y 1 |
 | tblFacturas | Estado | VARCHAR(10) | Requerido, predeterminado Borrador, cuatro valores |
-| tblFacturas | Observaciones | BLOB SUB_TYPE TEXT | |
+| tblFacturas | Observaciones | LONGVARCHAR | |
 | tblDetalleFactura | IdFactura, IdProducto | INTEGER | Clave principal compuesta |
 | tblDetalleFactura | Cantidad | INTEGER | Requerido, predeterminado 1, CHECK > 0 |
 | tblDetalleFactura | PrecioUnitario | DECIMAL(18,4) | Requerido, CHECK >= 0 |
-| tblHistorialPrecios | IdCambio | INTEGER IDENTITY | Clave principal |
+| tblHistorialPrecios | IdCambio | INTEGER IDENTITY (START WITH 1) | Clave principal; 0 significa «pila vacía» en el código |
 | tblHistorialPrecios | IdProducto | INTEGER | Requerido |
 | tblHistorialPrecios | PrecioAnterior | DECIMAL(18,4) | Requerido |
 | tblHistorialPrecios | FechaCambio | TIMESTAMP | Requerido, predeterminado `CURRENT_TIMESTAMP` |
@@ -53,7 +53,7 @@ Referencia de la base Firebird integrada que construye `modConstruirSolucion`: t
 
 ## Consultas
 
-Diez consultas de solución se implementan como vistas Firebird y aparecen junto a las tablas. `qryFacturasPorPeriodo` es una consulta parametrizada guardada de Base. En el recorrido manual el alumnado crea las vistas o consultas indicadas en cada laboratorio; el constructor del instructor reproduce sus resultados.
+Diez consultas de solución se implementan como vistas de HSQLDB y aparecen junto a las tablas. `qryFacturasPorPeriodo` es una consulta parametrizada guardada de Base. En el recorrido manual el alumnado crea las vistas o consultas indicadas en cada laboratorio; el constructor del instructor reproduce sus resultados.
 
 | Consulta | Qué hace | Sesión |
 | --- | --- | --- |
@@ -74,7 +74,7 @@ Diez consultas de solución se implementan como vistas Firebird y aparecen junto
 | Archivo | Kit | Contenido | Sesión |
 | --- | --- | --- | --- |
 | modRegistros.bas | Estudiante | Registro `TProducto`, búsqueda lineal y binaria | 2 |
-| modEstructuras.bas | Estudiante | Conexión aislada, parámetros nombrados, cola, pila, árbol y diccionario | 4–6 |
+| modEstructuras.bas | Estudiante | Conexión aislada, cola, pila, árbol y diccionario | 5–6 |
 | modConstantes.bas | Estudiante | Estados, dinero exacto y mensajes de error | 4, 6 y 8 |
 | clsLineaFactura.bas | Estudiante | Línea inmutable, inicializable una sola vez | 8 |
 | clsFactura_plantilla.bas | Estudiante | Pegar en módulo **clsFactura**; tres TODO | 8 |
@@ -87,11 +87,22 @@ Diez consultas de solución se implementan como vistas Firebird y aparecen junto
 
 ## Configuración del origen de datos
 
-| Propiedad en `DataSource.Info` | Valor | Función |
-| --- | --- | --- |
-| `ParameterNameSubstitution` | `True` | Base sustituye `:FechaInicial` y otros parámetros nombrados por los marcadores `?` del controlador Firebird |
+El origen de datos no necesita propiedades especiales. Con HSQLDB incorporado, Base reconoce los parámetros con nombre de `qryFacturasPorPeriodo` (`:FechaInicial`, `:FechaFinal`) siempre que la consulta no use SQL directo. Lo que sí hace falta es Java: sin un entorno de ejecución seleccionado en Herramientas → Opciones → LibreOffice → Avanzadas, la base no abre.
 
-`ConfigurarParametrosBase(documento)` conserva las demás propiedades de `Info` al establecer esta opción. `ConexionBase()` la aplica antes de abrir su primera conexión aislada. Para prepararla desde la interfaz, ejecuta `EjecutarConfiguracionParametros`: guarda el documento y muestra la confirmación. Si ya existían conexiones, cierra el `.odb` y sus ventanas y vuelve a abrirlo antes de probar la consulta parametrizada; cambiar `Info` no reconfigura una conexión abierta. Una conexión explícita recibida por las pruebas se prepara antes por su llamador.
+## Límites de HSQLDB 1.8
+
+| Límite | Consecuencia en el curso |
+| --- | --- |
+| `CHECK`, `UNIQUE` y `FOREIGN KEY` solo se aceptan como restricciones de tabla | Todas las restricciones se escriben después de los campos, con nombre |
+| Dentro de un `CHECK`, `LIKE` rechaza cualquier valor; `POSITION` funciona, pero la base ya no se puede reabrir, y `LOCATE` o `SUBSTRING` ni siquiera se pueden crear | El correo no lleva `CHECK`; su formato se validaría en el formulario o en Basic |
+| Una identidad sin `START WITH 1` empieza en 0 | Todas las identidades declaran `(START WITH 1)` |
+| Tras insertar IDs explícitos, la identidad continúa en el máximo más uno | No hace falta `RESTART` después de importar; `RESTART WITH n` haría que el siguiente valor fuera `n` |
+| Cada `CREATE` o `ALTER` confirma la transacción en curso | El constructor crea las tablas, carga los datos en una transacción y crea las vistas después; si falla, se usa otro `.odb` vacío |
+| No acepta literales `DATE '2026-09-01'` | Las fechas se escriben como texto ISO, `'2026-09-01'` |
+| `ROUND` calcula en coma flotante binaria | El impuesto se redondea con `CAST(FLOOR(x * 100 + 0.5) / 100 AS DECIMAL(18,4))` |
+| No hay `SELECT … FOR UPDATE` ni bloqueo de filas | El curso es de un solo usuario; los `UPDATE` comprueban el estado esperado en su `WHERE` |
+| No hay consultas recursivas ni triggers en SQL | El árbol se recorre con Basic; las reglas de negocio viven en las clases |
+| Limitar filas | `… ORDER BY … LIMIT 1` |
 
 ## Persistencia y límites de la API
 
@@ -99,11 +110,11 @@ Los módulos viven en `Standard` del documento. `ConexionBase(Optional conexion)
 
 Las consultas del repositorio son sentencias preparadas. Las operaciones relacionadas se confirman en una transacción SDBC; si fallan, se hace rollback. Los precios se enlazan con la conversión decimal exacta del kit. `CerrarConexionBase()` libera la conexión aislada que administra el kit; no cierre desde el repositorio la conexión que le prestó el llamador. `NumeroFactura` usa el máximo número comercial actual más uno; para usuarios concurrentes se requiere otro diseño de asignación. La restricción única sigue siendo necesaria.
 
-La identidad técnica `IdFactura` se reserva de forma atómica con `GEN_ID` sobre el generador IDENTITY que el repositorio encuentra mediante `RDB$GENERATOR_NAME`. Se inserta ese Id de manera explícita y se asigna al objeto después del commit. No se calcula con `MAX(IdFactura)`: el controlador Firebird integrado no abre el cursor necesario para `INSERT … RETURNING`. Una reserva puede dejar huecos tras un rollback; la identidad técnica no es el número comercial `NumeroFactura`.
+La identidad técnica `IdFactura` la asigna HSQLDB al insertar la factura sin ese campo. El repositorio la lee con `CALL IDENTITY()` en la misma conexión y la asigna al objeto después del commit. No se calcula con `MAX(IdFactura)`: `CALL IDENTITY()` devuelve el valor que generó esa conexión, aunque otra inserte facturas al mismo tiempo. Un rollback puede dejar huecos; la identidad técnica no es el número comercial `NumeroFactura`.
 
 `Cargar` y `AsignarId` son públicos porque Basic no ofrece `Friend`; forman el protocolo técnico del repositorio. `Cargar` solo acepta una instancia nueva (Id 0, número 0, estado Borrador), valida su encabezado y no puede reabrir una factura emitida. `AsignarId` acepta una identidad positiva y rechaza cambiar una identidad ya asignada. Un uso inválido produce 3010. Estas guardas protegen la reconstrucción; el formulario utiliza las operaciones de negocio. La base didáctica local sigue permitiendo editar tablas y código directamente.
 
-`CalcularPorcentajeMoneda(subtotal As Currency, tasa As Currency)` calcula el porcentaje; `RedondearMoneda(valor As Currency)` redondea un importe. Ambos redondean mitades hacia arriba para importes no negativos, igual que `ROUND(..., 2)` en las consultas monetarias del curso. La implementación mantiene la aritmética decimal exacta sin depender de conversiones decimales que no estén implementadas en todos los sistemas. `Currency` conserva cuatro decimales. Los formatos de pantalla a dos decimales no sustituyen tipos exactos ni redondeo explícito.
+`CalcularPorcentajeMoneda(subtotal As Currency, tasa As Currency)` calcula el porcentaje; `RedondearMoneda(valor As Currency)` redondea un importe. Ambos redondean mitades hacia arriba para importes no negativos, igual que `FLOOR(x * 100 + 0.5) / 100` en las vistas monetarias del curso. La implementación mantiene la aritmética decimal exacta sin depender de conversiones decimales que no estén implementadas en todos los sistemas. `Currency` conserva cuatro decimales. Los formatos de pantalla a dos decimales no sustituyen tipos exactos ni redondeo explícito.
 
 ## Errores de negocio
 
@@ -129,7 +140,7 @@ Todos los módulos del kit activan `Option VBASupport 1`. Este modo permite el o
 | 3002 | RepositorioFacturas | Intento de guardar dentro de otra transacción |
 | 3003 | RepositorioFacturas | Cambio de datos protegidos de una factura emitida |
 | 3010 | Factura | Reconstrucción fuera de una instancia nueva, encabezado inválido o intento de cambiar identidad |
-| 3011 | RepositorioFacturas | No se encontró el generador IDENTITY de `tblFacturas` |
+| 3011 | RepositorioFacturas | HSQLDB no devolvió la identidad de la factura nueva |
 | 4001 | DescuentoPorcentaje | Porcentaje fuera de 0 a 1 |
 | 4101 | Helpers monetarios | Importe negativo fuera del dominio del cálculo |
 | 4102 | MonedaDesdeSQL | Texto decimal SQL inválido o con más de cuatro decimales |

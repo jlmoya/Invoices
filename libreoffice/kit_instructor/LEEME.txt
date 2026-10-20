@@ -6,7 +6,8 @@ basic/modConstruirSolucion.bas  Tablas, restricciones, relaciones,
                                datos de ejemplo, vistas y consulta por periodo.
 basic/modSolucionesTareas.bas   Profundidad y ruta del árbol, tarea 6.
 
-1. Crea y guarda una base vacía Facturacion_Solucion.odb con Firebird integrado.
+1. Crea y guarda una base vacía Facturacion_Solucion.odb con "HSQLDB incorporado"
+   (requiere Java activado en Herramientas > Opciones > LibreOffice > Avanzadas).
 2. Crea los módulos de la biblioteca Standard del documento y pega los
    archivos UTF-8. Usa clsFactura.bas del instructor en el módulo clsFactura,
    en lugar de la plantilla del estudiante; nunca pegues ambas.

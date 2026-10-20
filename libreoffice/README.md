@@ -1,6 +1,6 @@
 # Curso: Introducción a las Estructuras de Datos con LibreOffice
 
-Curso-laboratorio en español de ocho sesiones de dos horas. Se construye un sistema didáctico de facturación en LibreOffice Base, con Firebird integrado, formularios e informes y clases en LibreOffice Basic.
+Curso-laboratorio en español de ocho sesiones de dos horas. Se construye un sistema didáctico de facturación en LibreOffice Base, con HSQLDB incorporado, formularios e informes y clases en LibreOffice Basic.
 
 | Carpeta | Contenido | Destinatario |
 | --- | --- | --- |
@@ -13,7 +13,7 @@ Empieza por la [introducción del instructor](guia_instructor/00_inicio.md) y la
 
 ## Herramientas
 
-LibreOffice de escritorio con Base, Calc y Writer. El curso usa Firebird integrado; no se deben ejecutar sus ejemplos SQL en HSQLDB. Las macros son LibreOffice Basic, usan SDBC/UNO, clases `Option ClassModule` y `Option VBASupport 1` para los errores personalizados que admite LibreOffice. El generador de informes y ciertos asistentes pueden necesitar Java: compruébalo antes del curso según las instrucciones del instructor.
+LibreOffice de escritorio con Base, Calc y Writer. El curso usa «HSQLDB incorporado», la base de datos incorporada que el asistente ofrece por omisión; no depende de funcionalidades experimentales. El SQL está escrito y probado para el HSQLDB 1.8 que trae LibreOffice. HSQLDB, los asistentes y el generador de informes necesitan Java: activa un entorno de ejecución en Herramientas → Opciones → LibreOffice → Avanzadas antes del curso. Las macros son LibreOffice Basic, usan SDBC/UNO, clases `Option ClassModule` y `Option VBASupport 1` para los errores personalizados que admite LibreOffice.
 
 Las guías se leen como Markdown. Los bloques Mermaid se visualizan con un visor compatible, por ejemplo GitHub o una extensión del editor. Los SVG se abren en un navegador. Para PDF o documentos de Writer, convierte las guías con una herramienta que renderice Mermaid.
 
@@ -29,4 +29,4 @@ Entrega únicamente `guia_estudiante/` y `kit_estudiante/`. Las carpetas del ins
 - [Clases en LibreOffice Basic](https://help.libreoffice.org/latest/es/text/sbasic/shared/classmodule.html).
 - [Colecciones de Basic](https://help.libreoffice.org/latest/es/text/sbasic/shared/collection.html).
 - [API SDBC de conexión y transacciones](https://api.libreoffice.org/docs/idl/ref/interfacecom_1_1sun_1_1star_1_1sdbc_1_1XConnection.html).
-- [Referencia SQL Firebird 3](https://www.firebirdsql.org/file/documentation/chunk/en/refdocs/fblangref30/firebird-30-language-reference.html).
+- [Sintaxis SQL de HSQLDB 1.8](https://hsqldb.org/doc/1.8/guide/ch09.html).

@@ -54,14 +54,12 @@ Public Sub Guardar(ByVal f As clsFactura)
     transaccion = True
     id = f.IdFactura
     If id = 0 Then
-        ' El driver SDBC de Firebird 3 no abre un cursor para INSERT RETURNING.
-        ' Reservar el generador IDENTITY es atómico; una reversión puede dejar un hueco.
-        id = ReservarIdentidad(cn)
-        q = cn.prepareStatement("INSERT INTO ""tblFacturas"" (""NumeroFactura"",""Fecha"",""IdCliente"",""TasaImpuesto"",""Estado"",""IdFactura"") VALUES (?,?,?,?,?,?)")
-        q.setInt(6,id)
+        ' HSQLDB asigna IdFactura al insertar; UltimaIdentidad lo lee después.
+        q = cn.prepareStatement("INSERT INTO ""tblFacturas"" (""NumeroFactura"",""Fecha"",""IdCliente"",""TasaImpuesto"",""Estado"") VALUES (?,?,?,?,?)")
     Else
-        ' Bloqueo de cabecera: leer y comprobar dentro de la misma transacción.
-        q = cn.prepareStatement("SELECT ""IdFactura"" FROM ""tblFacturas"" WHERE ""IdFactura""=? WITH LOCK")
+        ' Comprobar dentro de la misma transacción que la factura existe.
+        ' HSQLDB 1.8 no bloquea filas: la base incorporada del curso es de un solo usuario.
+        q = cn.prepareStatement("SELECT ""IdFactura"" FROM ""tblFacturas"" WHERE ""IdFactura""=?")
         q.setInt(1,id)
         rs = q.executeQuery()
         If Not rs.next() Then Err.Raise 3001, "Curso", MensajeError(3001)
@@ -82,6 +80,7 @@ Public Sub Guardar(ByVal f As clsFactura)
     q.setString(5,f.Estado)
     q.executeUpdate()
     q.close()
+    If id = 0 Then id = UltimaIdentidad(cn)
     q = cn.prepareStatement("DELETE FROM ""tblDetalleFactura"" WHERE ""IdFactura""=?")
     q.setInt(1,id)
     q.executeUpdate(): q.close()
@@ -151,22 +150,15 @@ Public Function SiguienteNumero() As Long
     rs.close(): q.close()
 End Function
 
-' Identidad técnica de Firebird, distinta del número comercial de factura.
-' No usa MAX(IdFactura). GEN_ID reserva un valor incluso entre conexiones concurrentes.
-Private Function ReservarIdentidad(ByVal cn As Object) As Long
-    Dim q As Object, rs As Object, generador As String
-    q = cn.prepareStatement("SELECT TRIM(RDB$GENERATOR_NAME) FROM RDB$RELATION_FIELDS WHERE RDB$RELATION_NAME=? AND RDB$FIELD_NAME=?")
-    q.setString(1,"tblFacturas")
-    q.setString(2,"IdFactura")
-    rs = q.executeQuery()
-    If Not rs.next() Then Err.Raise 3011, "Curso", MensajeError(3011)
-    generador = rs.getString(1)
-    rs.close(): q.close()
-    If generador="" Then Err.Raise 3011, "Curso", MensajeError(3011)
-    generador = Replace(generador,"""","""""")
+' Identidad técnica de HSQLDB, distinta del número comercial de factura.
+' No usa MAX(IdFactura): CALL IDENTITY() devuelve el último valor generado por esta
+' misma conexión, aunque otra conexión inserte facturas. Una reversión puede dejar un hueco.
+Private Function UltimaIdentidad(ByVal cn As Object) As Long
+    Dim q As Object, rs As Object
     q = cn.createStatement()
-    rs = q.executeQuery("SELECT GEN_ID(""" & generador & """,1) FROM RDB$DATABASE")
-    rs.next()
-    ReservarIdentidad = rs.getInt(1)
+    rs = q.executeQuery("CALL IDENTITY()")
+    If Not rs.next() Then Err.Raise 3011, "Curso", MensajeError(3011)
+    UltimaIdentidad = rs.getInt(1)
     rs.close(): q.close()
+    If UltimaIdentidad <= 0 Then Err.Raise 3011, "Curso", MensajeError(3011)
 End Function

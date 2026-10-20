@@ -17,7 +17,7 @@ El momento clave es entender que la tabla no cambia: cola y pila son reglas de a
 ## Guion
 
 - La recursión se ejecuta sobre una pila de llamadas: la pila reaparece donde nadie la escribió.
-- `FIRST 1` limita a una fila; la columna única de orden define qué fila ocupa el frente o el tope. Sin `ORDER BY` no hay disciplina de acceso.
+- `LIMIT 1` limita a una fila; la columna única de orden define qué fila ocupa el frente o el tope. Sin `ORDER BY` no hay disciplina de acceso.
 - Antes de cerrar, ejecuta en Herramientas → SQL `UPDATE "tblFacturas" SET "Estado" = 'Pagada' WHERE "NumeroFactura" = 1005` sobre una copia: la cola no lo impide.
 
 ## Preguntas para la discusión

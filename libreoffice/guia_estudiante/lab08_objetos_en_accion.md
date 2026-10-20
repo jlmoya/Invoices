@@ -166,7 +166,7 @@ La presentación puede usar coma decimal según tu sistema; compara los valores,
 
 2. Ejecuta `EjecutarPruebas` (llama a `ProbarReglas`). Prueba las reglas del ciclo de vida y muestra Correcto o FALLA para cada una.
 3. Corrige los tres TODO hasta que todas las reglas digan Correcto. Comprueba también que después de un rechazo el estado y las líneas no cambiaron.
-4. Sigue en el código la propiedad `Impuesto`. El curso redondea el impuesto a dos decimales con mitades hacia arriba para importes no negativos. La consulta Firebird usa `ROUND(..., 2)` y `CalcularPorcentajeMoneda` del kit reproduce la misma regla con valores de cuatro decimales. La tasa se copia a la factura; el impuesto histórico no depende de cambiar luego `tblParametros`.
+4. Sigue en el código la propiedad `Impuesto`. El curso redondea el impuesto a dos decimales con mitades hacia arriba para importes no negativos. La vista de HSQLDB usa `FLOOR(x * 100 + 0.5) / 100` y `CalcularPorcentajeMoneda` del kit reproduce la misma regla con valores de cuatro decimales. La tasa se copia a la factura; el impuesto histórico no depende de cambiar luego `tblParametros`.
 
 > **Concepto:** `ProbarReglas` es una prueba automatizada. Ejecútala cuando cambies la clase. Sus cuadros de resultados permiten probar sin SQL ni formularios: la factura y sus líneas viven solo en memoria.
 

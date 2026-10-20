@@ -53,7 +53,7 @@ El documento se llama `frmFacturas`; dentro sus modelos son `fFactura`, `sfDetal
 | Error al cargar sfTotales | Se eligió Consulta cuando es una vista del motor | Tipo Tabla, contenido qryTotalesFactura |
 | No se guarda una línea nueva | Padre sin ID o clave duplicada producto–factura | Guardar encabezado y comprobar vínculo; modelo no permite repetir producto |
 | Informe duplicado por cada línea | Totales sumados en pie | Mostrar campos directos una vez; no SUM(Total) sobre vista de impresión |
-| Diseñador de informes no abre | Java ausente o incompatible | Comprobar JRE y arquitectura seleccionada en LibreOffice → Avanzado |
+| Diseñador de informes no abre | Java ausente o incompatible | Comprobar el entorno de Java y su arquitectura en Herramientas → Opciones → LibreOffice → Avanzadas |
 | Informe vacío | No hay líneas o falta la única fila de parámetros | Verificar fuente SQL y tblParametros; una factura sin líneas queda fuera por diseño |
 | Botón genera todas las facturas | No se estableció Filter en ReportDefinition | Probar filtro manual, luego comprobar código e ID actual |
 | Botón pide guardar el diseño de reporte | Diseñador abierto con cambios previos | Guardar y cerrar antes de ejecutar; conservar/restaurar filtro temporal |

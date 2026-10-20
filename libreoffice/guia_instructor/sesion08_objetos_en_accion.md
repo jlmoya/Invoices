@@ -60,8 +60,8 @@ El kit del instructor incluye `clsFactura.bas` completa. Úsala en un documento 
 | Pregunta | Respuesta esperada |
 | --- | --- |
 | ¿Por qué `Obtener` agrega las líneas antes de llamar a `Cargar`? | `AgregarLinea` exige borrador: el objeto se reconstruye respetando sus reglas y al final se restaura el estado guardado |
-| ¿Qué pasa si dos usuarios emiten a la vez? | `MAX + 1` puede dar el mismo número; la restricción única rechaza el segundo. La base integrada del curso es local. Un servidor con varios usuarios necesita asignación de números dentro de una transacción con bloqueo o un generador, según los requisitos de continuidad |
-| ¿Qué defensa falta todavía? | Las escrituras directas a las tablas. Firebird ofrece restricciones y triggers; una interfaz bloqueada no sustituye una regla de almacenamiento |
+| ¿Qué pasa si dos usuarios emiten a la vez? | `MAX + 1` puede dar el mismo número; la restricción única rechaza el segundo. La base incorporada del curso es local. Un servidor con varios usuarios necesita asignación de números dentro de una transacción con bloqueo o un generador, según los requisitos de continuidad |
+| ¿Qué defensa falta todavía? | Las escrituras directas a las tablas. HSQLDB aplica `CHECK`, `UNIQUE` y claves foráneas; sus triggers se escriben en Java y quedan fuera del curso. Una interfaz bloqueada no sustituye una regla de almacenamiento |
 
 ## Errores frecuentes
 

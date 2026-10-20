@@ -8,7 +8,7 @@ El momento clave llega cuando el grupo descubre que el total de la factura no se
 | --- | --- | --- |
 | 0–10 | Presentación del curso y del hilo evolutivo | Proyecta la factura 1001 |
 | 10–35 | Parte A: análisis de la factura | 10 min individual, 15 en parejas |
-| 35–55 | Parte B: carpeta local, seguridad y Base nueva | Verifica Firebird integrado en cada equipo |
+| 35–55 | Parte B: carpeta local, seguridad y Base nueva | Verifica Java y HSQLDB incorporado en cada equipo |
 | 55–70 | Parte C: recorrido por la interfaz | Demostración en el proyector |
 | 70–95 | Parte D: modelo entidad-relación en Mermaid | Dos parejas muestran su diagrama |
 | 95–110 | Puesta en común | Entidad, atributo, registro, dato calculado |
@@ -30,8 +30,9 @@ El momento clave llega cuando el grupo descubre que el total de la factura no se
 
 ## Preparación del aula
 
-- Verifica LibreOffice con Base en Windows, macOS o Linux. Selecciona Firebird integrado al crear el `.odb`; una conexión de solo lectura a CSV no sirve para estos ejercicios.
-- Para los asistentes y el Diseñador de informes, instala y selecciona un JRE compatible con la arquitectura de LibreOffice en Preferencias/Opciones → LibreOffice → Avanzado. Comprueba especialmente equipos ARM y la arquitectura del JRE.
+- Verifica LibreOffice con Base en Windows, macOS o Linux. Al crear el `.odb`, la base de datos incorporada es «HSQLDB incorporado», la opción predeterminada; una conexión de solo lectura a CSV no sirve para estos ejercicios.
+- HSQLDB incorporado, los asistentes y el Diseñador de informes necesitan Java. Instala un entorno de ejecución compatible con la arquitectura de LibreOffice y márcalo en Herramientas → Opciones → LibreOffice → Avanzadas → «Utilizar un entorno de ejecución de Java» (en macOS, LibreOffice → Preferencias). Comprueba especialmente equipos ARM y la arquitectura del entorno.
+- Si un equipo muestra también «Firebird incorporado», tiene activadas las funcionalidades experimentales. No lo elijan: el SQL del curso es de HSQLDB.
 - Distribuye el kit UTF-8 en una carpeta local `CursoED` con `datos` y `basic`. Configura la confianza de esa carpeta siguiendo las políticas de la institución; no reduzcas globalmente la seguridad de macros.
 - El estudiante construye su base desde cero; `ConstruirSolucion` es apoyo del instructor y no sustituye las sesiones 2–5.
 
@@ -39,9 +40,9 @@ El momento clave llega cuando el grupo descubre que el total de la factura no se
 
 | Síntoma | Causa | Solución |
 | --- | --- | --- |
-| No aparece Base o Firebird integrado | Instalación incompleta o motor distinto | Completar la instalación del aula y seleccionar Firebird integrado |
+| No aparece Base, o el asistente no crea la base con HSQLDB incorporado | Instalación incompleta o falta Java | Completar la instalación del aula, seleccionar un entorno de Java en Avanzadas y reiniciar LibreOffice |
 | Macros bloqueadas | Carpeta no confiable o política institucional | Revisar ubicación de confianza y reabrir; coordinar con TI si es administrada |
-| Asistente o informe no abre | Falta un JRE seleccionado y compatible | Verificar LibreOffice → Avanzado y reiniciar LibreOffice si hace falta |
+| Asistente o informe no abre | Falta un entorno de Java seleccionado y compatible | Verificar Herramientas → Opciones → LibreOffice → Avanzadas y reiniciar LibreOffice si hace falta |
 | Base creada fuera de CursoED | No se eligió carpeta al guardar | Guardar en la carpeta local acordada y verificar la ruta |
 | Copia de seguridad no conserva el último cambio | Se copió el `.odb` con la base abierta | Guardar, cerrar todos sus documentos, cerrar Base y copiar |
 | Mermaid marca error | Nombres de entidad con espacios o sintaxis incompleta | Usar `LINEA_FACTURA` y revisar cardinalidades |
@@ -75,5 +76,5 @@ Datos calculados: el saldo pendiente de cada factura. Regla que vale la pena se�
 
 1. Es un dato derivado: si cambia una cantidad, un total guardado queda inconsistente.
 2. La entidad es el tipo de cosa (Cliente); el registro es una ocurrencia (el cliente 1).
-3. Firebird almacena y protege datos; Base reúne objetos y conexiones; el formulario Writer contiene controles ligados a un conjunto de filas. La confianza del documento afecta la ejecución de las macros.
+3. HSQLDB almacena y protege datos; Base reúne objetos y conexiones; el formulario Writer contiene controles ligados a un conjunto de filas. La confianza del documento afecta la ejecución de las macros.
 4. Cada factura tiene exactamente un cliente; un cliente tiene cero o muchas facturas.

@@ -7,7 +7,7 @@ Hoy calculas importes, subtotales, impuestos y totales con consultas. Descubrir�
 - Relacionar las operaciones sobre colecciones con las partes de una consulta.
 - Crear consultas con campos calculados, criterios, orden y parámetros.
 - Calcular el total de cada factura encadenando consultas.
-- Leer y escribir SQL Firebird y distinguir vistas del motor de consultas guardadas de Base.
+- Leer y escribir SQL de HSQLDB y distinguir vistas del motor de consultas guardadas de Base.
 - Guardar la configuración del sistema en una tabla de un solo registro.
 
 ## Conceptos
@@ -23,7 +23,7 @@ Hoy calculas importes, subtotales, impuestos y totales con consultas. Descubrir�
 | Unir | `JOIN` | Seguir referencias | Factura con su cliente |
 | Ordenar | `ORDER BY` | `sort` | Clientes por monto vendido |
 
-> **Conexión:** una consulta describe qué resultado quieres, no cómo obtenerlo. El motor Firebird decide si recorre la tabla o usa un índice. A ese estilo se le llama programación declarativa.
+> **Conexión:** una consulta describe qué resultado quieres, no cómo obtenerlo. El motor HSQLDB decide si recorre la tabla o usa un índice. A ese estilo se le llama programación declarativa.
 
 **Encadenar consultas.** Una vista SQL del motor puede usarse como una tabla en otra consulta. Así el total se arma como una tubería: cada paso hace una sola cosa y se prueba por separado.
 
@@ -50,9 +50,9 @@ flowchart LR
 
 Por eso las fórmulas de este laboratorio usan `f.TasaImpuesto`, la tasa de la factura. Si el impuesto cambia, editas un solo valor en `tblParametros`, sin tocar consultas ni código: las facturas nuevas toman la tasa nueva y las anteriores conservan la suya, como el precio unitario de cada línea.
 
-**Tres lugares para SQL.** En Herramientas → SQL se ejecuta cada comando de creación o cambio. Una consulta guardada de Base conserva un `SELECT` y puede pedir parámetros. Una **vista Firebird** conserva un `SELECT` dentro del motor y aparece con las tablas en Base; no tiene parámetros. Usaremos vistas para los cálculos reutilizables, porque el código SDBC y el SQL nativo pueden consultarlas sin depender del analizador de Base. Conservamos el prefijo `qry` por su papel en la tubería del curso.
+**Tres lugares para SQL.** En Herramientas → SQL se ejecuta cada comando de creación o cambio. Una consulta guardada de Base conserva un `SELECT` y puede pedir parámetros. Una **vista de HSQLDB** conserva un `SELECT` dentro del motor y aparece con las tablas en Base; no tiene parámetros. Usaremos vistas para los cálculos reutilizables, porque el código SDBC y el SQL nativo pueden consultarlas sin depender del analizador de Base. Conservamos el prefijo `qry` por su papel en la tubería del curso.
 
-**Redondeo explícito.** Firebird `ROUND(x, 2)` redondea los empates alejándose de cero: 2.5 → 3 y −2.5 → −3. Para los importes no negativos del curso es la regla de mitad hacia arriba. Basic usa la función `RedondearMoneda` del kit para aplicar la misma política; no dependas de una función de otro lenguaje con un redondeo diferente. El impuesto se redondea una vez sobre el subtotal, no por línea. El 16 % es un ejemplo educativo, no una regla fiscal de un país.
+**Redondeo explícito.** El impuesto se redondea una vez sobre el subtotal, no por línea, a centavos y con las mitades hacia arriba: 2.405 → 2.41. En HSQLDB, `ROUND` calcula en coma flotante binaria, el mismo problema del 0.1 + 0.2 del laboratorio 2: `ROUND(2.405, 2)` da 2.4. Por eso las vistas trabajan en centavos: multiplican por 100, suman media unidad, se quedan con la parte entera con `FLOOR` y dividen entre 100. `FLOOR(x * 100 + 0.5) / 100` da el redondeo exacto en los importes no negativos de una factura. Basic usa la función `RedondearMoneda` del kit para aplicar la misma política. El 16 % es un ejemplo educativo, no una regla fiscal de un país.
 
 ## Paso a paso
 
@@ -62,10 +62,12 @@ Por eso las fórmulas de este laboratorio usan `f.TasaImpuesto`, la tasa de la f
 
 ```sql
 CREATE TABLE "tblParametros" (
-    "Id" INTEGER PRIMARY KEY CHECK ("Id" = 1),
+    "Id" INTEGER PRIMARY KEY,
     "NombreEmpresa" VARCHAR(100),
     "DocumentoFiscalEmpresa" VARCHAR(20),
-    "TasaImpuesto" DECIMAL(9,4) NOT NULL CHECK ("TasaImpuesto" BETWEEN 0 AND 1)
+    "TasaImpuesto" DECIMAL(9,4) NOT NULL,
+    CONSTRAINT "CK_Parametros_Id" CHECK ("Id" = 1),
+    CONSTRAINT "CK_Parametros_Tasa" CHECK ("TasaImpuesto" BETWEEN 0 AND 1)
 );
 ```
 
@@ -111,15 +113,16 @@ Ejecuta en Herramientas → SQL. Prueba su `SELECT` en una consulta de Base y ob
 CREATE VIEW "qryTotalesFactura" AS
 SELECT f."IdFactura", f."NumeroFactura", f."Fecha", f."Estado", c."RazonSocial",
        s."Subtotal", f."TasaImpuesto",
-       CAST(ROUND(s."Subtotal" * f."TasaImpuesto", 2) AS DECIMAL(18,4)) AS "Impuesto",
-       CAST(s."Subtotal" + ROUND(s."Subtotal" * f."TasaImpuesto", 2)
+       CAST(FLOOR(s."Subtotal" * f."TasaImpuesto" * 100 + 0.5) / 100
+            AS DECIMAL(18,4)) AS "Impuesto",
+       s."Subtotal" + CAST(FLOOR(s."Subtotal" * f."TasaImpuesto" * 100 + 0.5) / 100
             AS DECIMAL(18,4)) AS "Total"
 FROM "tblFacturas" f
 JOIN "tblClientes" c ON c."IdCliente" = f."IdCliente"
 JOIN "qrySubtotalesFactura" s ON s."IdFactura" = f."IdFactura";
 ```
 
-Abre la vista y compara con los puntos de control. Cada factura usa su tasa guardada. `CAST` fija el tipo decimal del resultado; aplicar un formato moneda en pantalla no reemplaza esta elección de tipo.
+Abre la vista y compara con los puntos de control. Cada factura usa su tasa guardada. `FLOOR` devuelve un número en coma flotante; `CAST` lo vuelve decimal exacto antes de sumarlo al subtotal. Aplicar un formato moneda en pantalla no reemplaza esta elección de tipo.
 
 ### Parte E · Filtrar, agrupar y ordenar: ventas por cliente (15 min)
 
@@ -143,9 +146,7 @@ Guarda este `SELECT` como `verVentasPorCliente`. La vista expresa el cálculo; e
 
 ### Parte F · Parámetros: facturas de un periodo (15 min)
 
-1. En la ventana principal de Base, abre **Editar → Base de datos → Configuración avanzada → Configuración especial** y activa **Reemplazar parámetros con nombre por «?»**. Esta propiedad del origen de datos permite convertir `:FechaInicial` y `:FechaFinal` en los parámetros posicionales que recibe el controlador Firebird. Guarda, cierra todas las ventanas de la base y vuelve a abrir `Facturacion.odb`, para crear conexiones con la configuración nueva.
-2. Si el controlador no muestra esa casilla, carga ahora `basic/modConstantes.bas` y `basic/modEstructuras.bas` en módulos de **Standard del documento**, según `00_inicio.md`. Ejecuta el procedimiento sin argumentos **`EjecutarConfiguracionParametros`** de `modEstructuras`: llama a `ConfigurarParametrosBase` y conserva las demás propiedades del origen de datos. Guarda, cierra Base y vuelve a abrir el documento. Esta carga anticipa los módulos que usarás en las sesiones 5–6; todavía no ejecutes las rutinas de cola, pila o árbol, porque sus tablas se completan en la sesión 6.
-3. Crea una **consulta guardada de Base**, no una vista. En vista SQL, desactiva «Ejecutar orden SQL directamente»: Base debe interpretar los parámetros antes de enviarlos al motor.
+1. Crea una **consulta guardada de Base**, no una vista. En vista SQL, desactiva «Ejecutar orden SQL directamente»: Base debe interpretar los parámetros antes de enviarlos al motor.
 
 ```sql
 SELECT "NumeroFactura", "Fecha", "RazonSocial", "Total"
@@ -154,9 +155,9 @@ WHERE "Fecha" BETWEEN :FechaInicial AND :FechaFinal
 ORDER BY "Fecha";
 ```
 
-4. Guarda como `qryFacturasPorPeriodo`. Al abrirla, Base pide `FechaInicial` y `FechaFinal`; escribe el 1 y el 10 de septiembre de 2026 con el formato de fecha que muestra tu configuración regional. Los nombres llevan `:` y no espacios. No existe una declaración `PARAMETERS` en Firebird.
-5. Debe devolver las facturas 1001–1004. Si el formato resulta ambiguo, comprueba por separado el filtro con los literales SQL `DATE '2026-09-01'` y `DATE '2026-09-10'`; vuelve después a la versión con parámetros.
-6. Guarda y cierra Base; copia `Facturacion.odb` como `copias/Facturacion_lab04.odb`.
+2. Guarda como `qryFacturasPorPeriodo`. Al abrirla, Base pide `FechaInicial` y `FechaFinal`; escribe el 1 y el 10 de septiembre de 2026 con el formato de fecha que muestra tu configuración regional. Los nombres llevan `:` y no espacios. No hace falta declarar los parámetros: Base los reconoce por los dos puntos.
+3. Debe devolver las facturas 1001–1004. Si el formato resulta ambiguo, comprueba por separado el filtro con los textos `'2026-09-01'` y `'2026-09-10'`: HSQLDB 1.8 convierte el texto ISO en fecha, pero no acepta la forma `DATE '2026-09-01'`. Vuelve después a la versión con parámetros.
+4. Guarda y cierra Base; copia `Facturacion.odb` como `copias/Facturacion_lab04.odb`.
 
 ## Puntos de control
 
@@ -174,7 +175,7 @@ ORDER BY "Fecha";
 
 - [ ] `qryTotalesFactura` coincide con la tabla anterior.
 - [ ] `verVentasPorCliente` muestra 4 clientes: primero Escuela Técnica Horizonte (38,715.00) y Papelería El Estudiante con 2 facturas y 3,873.24.
-- [ ] La sustitución de parámetros con nombre está activa y `qryFacturasPorPeriodo` del 1 al 10 de septiembre devuelve las facturas 1001 a 1004.
+- [ ] `qryFacturasPorPeriodo` del 1 al 10 de septiembre devuelve las facturas 1001 a 1004.
 - [ ] `tblParametros` rechaza un segundo registro.
 
 ## Tarea 4 · Ventas por producto y por mes
@@ -193,4 +194,4 @@ ORDER BY "Fecha";
 
 ## Referencias
 
-[Parámetros y SQL directo en Base](https://help.libreoffice.org/latest/es/text/sdatabase/02010100.html), [sustitución de parámetros con nombre](https://help.libreoffice.org/latest/es/text/sdatabase/dabaadvpropdat.html) y [funciones, vistas y redondeo de Firebird 3](https://www.firebirdsql.org/file/documentation/html/en/refdocs/fblangref30/firebird-30-language-reference.html).
+[Parámetros y SQL directo en Base](https://help.libreoffice.org/latest/es/text/sdatabase/02010100.html) y [funciones y vistas de HSQLDB 1.8](https://hsqldb.org/doc/1.8/guide/ch09.html).

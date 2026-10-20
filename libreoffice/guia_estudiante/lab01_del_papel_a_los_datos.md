@@ -7,7 +7,7 @@ En esta sesión conviertes una factura en papel en un modelo de datos y creas la
 - Distinguir dato, información y estructura de datos.
 - Identificar entidades, atributos y registros en un documento real.
 - Separar los datos que se guardan de los que se calculan.
-- Crear una base Firebird integrada y reconocer los objetos y las bibliotecas de Basic en LibreOffice.
+- Crear una base con HSQLDB incorporado y reconocer los objetos y las bibliotecas de Basic en LibreOffice.
 - Dibujar un primer modelo entidad-relación en Mermaid.
 
 ## Conceptos
@@ -44,13 +44,16 @@ En esta sesión conviertes una factura en papel en un modelo de datos y creas la
 ### Parte B · Prepara LibreOffice Base (20 min)
 
 1. Crea una carpeta local `CursoED` con `datos` y `basic`. Puede estar en tu carpeta de usuario de Windows, macOS o Linux. Copia allí los CSV y las fuentes de `kit_estudiante`; anota su ruta. El curso usará rutas relativas a esta carpeta.
-2. Abre LibreOffice y elige Archivo → Nuevo → Base de datos. En el asistente, selecciona **Crear una nueva base de datos** y **Firebird integrado**. No elijas una conexión a una hoja de cálculo: sirve para leer datos, pero no para crear estas tablas y restricciones.
-3. En el último paso, puedes desmarcar «Registrar la base de datos»; los ejemplos acceden al documento abierto. Marca abrir para editar, termina y guarda como `CursoED/Facturacion.odb`.
-4. Comprueba que la ventana indica Firebird integrado como conexión. Anota la versión de LibreOffice en Ayuda → Acerca de. El SQL de este curso se prepara para Firebird 3, integrado en la instalación validada; si tu motor es otro, consulta al instructor antes de cambiar el esquema.
-5. Para las macros del curso, abre Herramientas → Opciones → LibreOffice → Seguridad → Seguridad de macros → Fuentes de confianza → Ubicaciones de archivos de confianza. En macOS, Opciones se encuentra en LibreOffice → Preferencias. Agrega solamente tu carpeta local `CursoED`, mantén el nivel de seguridad y vuelve a abrir el documento. Sigue las políticas del aula si esta opción está administrada.
-6. Comprueba que Base y el editor de Basic abren. Para los asistentes y el Diseñador de informes, el aula debe disponer también de un JRE compatible con la arquitectura de LibreOffice, seleccionado en LibreOffice → Avanzado. Firebird integrado no exige Java para ejecutar su SQL; el Diseñador de informes sí lo requiere.
+2. HSQLDB, el motor de la base, funciona con Java. Abre Herramientas → Opciones → LibreOffice → Avanzadas; en macOS, Opciones está en LibreOffice → Preferencias. En **Opciones de Java**, marca **Utilizar un entorno de ejecución de Java** y selecciona un entorno de la lista. Si la lista está vacía, pide al instructor que instale uno compatible con tu LibreOffice. Acepta y reinicia LibreOffice si te lo pide.
+3. Elige Archivo → Nuevo → Base de datos. En el **Asistente para bases de datos**, selecciona **Crear una base de datos nueva** y, en **Base de datos incorporada**, deja **HSQLDB incorporado**, que es la opción predeterminada. No elijas una conexión a una hoja de cálculo: sirve para leer datos, pero no para crear estas tablas y restricciones.
+4. En el último paso puedes elegir **No registrar la base de datos**; los ejemplos usan el documento abierto. Deja marcada **Abrir la base de datos para su edición**, pulsa Finalizar y guarda como `CursoED/Facturacion.odb`.
+5. Comprueba que la barra inferior de la ventana indica HSQLDB incorporado. Anota la versión de LibreOffice en Ayuda → Acerca de. El SQL de este curso está escrito y probado para el HSQLDB 1.8 que trae LibreOffice.
+6. Para las macros del curso, abre Herramientas → Opciones → LibreOffice → Seguridad → Seguridad de macros → Fuentes de confianza → Ubicaciones de archivos de confianza. Agrega solamente tu carpeta local `CursoED`, mantén el nivel de seguridad y vuelve a abrir el documento. Sigue las políticas del aula si esta opción está administrada.
+7. Comprueba que Base y el editor de Basic abren. El mismo entorno de Java sirve también para los asistentes y el Diseñador de informes.
 
-> **Captura sugerida:** ventana de Base con `Facturacion.odb` y Firebird integrado. La base se construye en clase; el kit no trae una base binaria terminada.
+> **Ojo:** si el asistente ofrece también «Firebird incorporado», no lo elijas. Esa opción solo aparece con las funcionalidades experimentales activadas, y el SQL del curso es de HSQLDB.
+
+> **Captura sugerida:** ventana de Base con `Facturacion.odb` y HSQLDB incorporado. La base se construye en clase; el kit no trae una base binaria terminada.
 
 ### Parte C · Recorre la interfaz (15 min)
 
@@ -58,7 +61,7 @@ En esta sesión conviertes una factura en papel en un modelo de datos y creas la
 
 | Objeto | Para qué sirve | Lo usarás en |
 | --- | --- | --- |
-| Tabla o vista de Firebird | Guarda filas; una vista conserva una definición SQL y calcula al consultarla | Sesiones 2–4 |
+| Tabla o vista de HSQLDB | Guarda filas; una vista conserva una definición SQL y calcula al consultarla | Sesiones 2–4 |
 | Consulta guardada de Base | Conserva una pregunta, criterios y parámetros | Sesión 4 |
 | Formulario | Documento Writer con controles ligados a datos | Sesión 5 |
 | Informe | Diseño que genera un documento Writer para imprimir | Sesión 5 |
@@ -68,7 +71,7 @@ En esta sesión conviertes una factura en papel en un modelo de datos y creas la
 2. Observa que abrir una tabla muestra filas; editarla permite ver campos y tipos. En formularios de Writer, activa **Modo diseño** para modificar los controles y desactívalo para trabajar con los datos.
 3. Abre el organizador de Basic e identifica las bibliotecas del documento `Facturacion.odb` y «Mis macros». El curso guardará su código en el documento, según `00_inicio.md`, para que la base y sus macros viajen juntas.
 
-**Estructura y contenido.** Base es la interfaz. Firebird almacena y protege los datos. El archivo `.odb` reúne la base integrada, consultas y documentos; un formulario Writer y un resultado de informe son objetos distintos aunque ambos se dibujen en páginas. Guarda y cierra completamente Base antes de copiar el `.odb`: una copia con la base todavía abierta puede omitir cambios recientes.
+**Estructura y contenido.** Base es la interfaz. HSQLDB almacena y protege los datos. El archivo `.odb` reúne la base incorporada, consultas y documentos; un formulario Writer y un resultado de informe son objetos distintos aunque ambos se dibujen en páginas. Guarda y cierra completamente Base antes de copiar el `.odb`: una copia con la base todavía abierta puede omitir cambios recientes.
 
 ### Parte D · Tu primer modelo entidad-relación (25 min)
 
@@ -100,7 +103,7 @@ erDiagram
 
 - [ ] Tu tabla de análisis clasifica al menos 15 datos.
 - [ ] Tu carpeta `CursoED` contiene `datos`, `basic` y `Facturacion.odb`; identificaste dónde guardar las macros.
-- [ ] `Facturacion.odb` abre con Firebird integrado y has anotado la versión instalada.
+- [ ] `Facturacion.odb` abre con HSQLDB incorporado y has anotado la versión instalada.
 - [ ] Tu diagrama tiene 4 entidades, 3 relaciones y los atributos de cada entidad.
 
 ## Tarea 1 · Modela un recibo de pago
@@ -117,7 +120,7 @@ Entrega:
 
 1. ¿Por qué el total de una factura no debería guardarse como un dato más?
 2. ¿Qué diferencia hay entre una entidad y un registro?
-3. ¿Qué diferencia hay entre el motor Firebird, la ventana de Base y un formulario Writer?
+3. ¿Qué diferencia hay entre el motor HSQLDB, la ventana de Base y un formulario Writer?
 4. En `CLIENTE ||--o{ FACTURA`, ¿qué significa cada extremo?
 
 ## Referencias de esta sesión
