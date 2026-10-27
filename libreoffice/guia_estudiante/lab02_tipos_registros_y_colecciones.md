@@ -156,7 +156,7 @@ End Sub
 ## Puntos de control
 
 - [ ] El experimento distingue la aproximación `Double` del cálculo `Currency`.
-- [ ] `tblClientes` contiene 8 filas y `tblProductos`, 15.
+- [ ] En la vista de diseño, `tblClientes` tiene 8 campos (columnas) y `tblProductos`, 7.
 - [ ] Precio es `DECIMAL(18,4)` y el documento fiscal conservó sus ceros.
 - [ ] HSQLDB rechaza precio negativo, existencia negativa, nulo obligatorio y documento repetido.
 - [ ] Una alta sin ID no choca con los importados: recibe un número mayor que el último ID importado.
